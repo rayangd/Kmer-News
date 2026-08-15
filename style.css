@@ -1,0 +1,495 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+   body {
+width: 100%;
+    min-height: 100vh;
+    background-color: rgb(2, 2, 38);
+    position: relative;
+}
+
+img {
+    position: absolute;
+    top: 5px;
+    left: 40px;
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+}
+
+h3 {
+    position: absolute;
+    top: 10px;
+    left: 120px;
+}
+
+.jaune {
+    position: absolute;
+    top: 10px;
+    left: 180px;
+    color: orange;
+}
+
+.info {
+    position: absolute;
+    top: 35px;
+    left: 120px;
+    font-size: 10px;
+}
+
+
+nav {
+    position: absolute;
+    top: 10px;
+    left: 340px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+nav a {
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 15px;
+}
+
+
+.culture {
+    background-color: blueviolet;
+    color: white;
+}
+
+.musique {
+    background-color: red;
+    color: white;
+}
+
+.sport {
+    background-color: rgb(35, 147, 147);
+    color: white;
+}
+
+.high-tech {
+    background-color: orange;
+    color: black;
+}
+
+
+
+
+.connection {
+    position: absolute;
+    top: 5px;
+right: 110px;
+    text-decoration: none;
+    padding: 10px;
+    border: 1px solid wheat;
+    border-radius: 10px;
+    color: white;
+}
+.inscription {
+    position: absolute;
+    top: 5px;
+    right: 20px;
+
+    text-decoration: none;
+    background-color: orange;
+    padding: 10px;
+    border-radius: 10px;
+    color: black;
+}
+
+#formulair {
+     display: none;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    width: 560px;
+    min-height: 400px;
+    padding: 20px 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    top: 1800px;
+    left: 550px;
+}
+h5 {
+    padding: 0;
+    color: blueviolet;
+    font-size: 18px;
+}
+
+#formulair input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid rgb(177, 177, 138);
+}
+.accept {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    color: black;
+}
+#formulair .checkbox {
+    width: auto;
+    margin: 0 5px 0 0;
+}
+.envoi {
+    position: static;
+    background-color: rgb(58, 136, 125);
+    padding: 10px;
+    width: 100%;
+    color: white;
+    border-radius: 15px;
+    margin-top: 15px;
+    border: none;
+}
+
+.conne {
+    color: rgb(58, 136, 125);
+}
+label {
+    color: rgb(177, 177, 138);
+}
+td {
+    color: rgb(177, 177, 138);
+}
+a {
+    color: black;
+}
+#formulaire {
+  display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    width: 420px;
+    height: 490px;
+    padding: 20px;
+    position: absolute;
+    top: 1610px;
+    left: 500px;
+}
+
+
+#formulaire input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+
+    border: 1px solid rgb(177, 177, 138);
+}
+
+.envoie {
+    position: static;
+    background-color: blueviolet;
+    padding: 10px;
+    width: 100%;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    margin-top: 10px;
+}
+
+.accepte {
+    display: flex;
+    align-items: center;
+
+    margin-top: 5px;
+    color: black;
+}
+
+#formulaire .checkbox {
+    position: static;
+
+    width: auto;
+    margin: 0 5px 0 0;
+}
+.dj {
+    position: static;
+    margin-top: 15px;
+    color: black;
+}
+.edition{
+    position: absolute;
+    top: 170px;
+    left: 40px;
+    background-color: orange;
+    padding: 5px;
+    border-radius: 20px;
+    color: black;
+}
+.actu{
+    display: flex;
+    position: absolute;
+    top: 210px;
+    left: 40px;
+    font-size: 40px;
+    color: white;
+}
+p{
+      display: flex;
+    position: absolute;
+    top: 300px;
+    left: 40px;
+    color: white;
+    
+}
+.insc{
+  position: absolute;
+  top: 360px;
+  left: 40px;
+  text-decoration: none;
+  padding: 5px;
+  background-color: orange;
+  border-radius: 20px;
+}
+  .deja{
+    position: absolute;
+  top: 360px;
+  left: 230px; 
+  text-decoration: none;
+   padding: 5px;
+    background-color: rgba(199, 196, 191, 0.879);
+  border-radius: 20px;
+}
+button a{
+    text-decoration: none;
+    border: none;
+}
+.liste{
+     position: absolute;
+  top: 430px;
+  left: 0px; 
+  display: flex ;
+  justify-content: center;
+}
+.violet{
+    width: 320px;
+    background-color: blueviolet;
+}
+.red{
+    position: absolute;
+     width: 320px;
+    background-color: red;
+    left: 320px;
+    
+}
+.vert{
+       position: absolute;
+     width: 332px;
+    background-color: rgb(51, 143, 51);
+    left: 620px;
+}
+.orange{
+      position: absolute;
+     width: 320px;
+    background-color: orange;
+    left: 936px;
+}
+
+main {
+    width: 100%;
+    min-height: 1100px;
+    background-color: white;
+    position: absolute;
+    top: 450px;
+}
+
+
+
+.boxi-culture{
+    background-color: blueviolet;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    border-radius: 10px;
+
+}
+
+.c{
+    position: absolute;
+  top: 40px;
+  left: 90px;
+  color: rgb(95, 9, 93);
+}
+.pi{
+     position: absolute;
+  top: 80px;
+  left: 90px;
+  color: rgb(46, 41, 41);
+}
+.boxi-cultur{
+    background-color: blueviolet;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 100px;
+    left: 500px;
+     border-radius: 10px;
+}
+.boxi-cultu{
+    background-color: blueviolet;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 100px;
+    left: 850px;
+     border-radius: 10px;
+}
+.lien-cul{
+    position: absolute;
+    top: 80px;
+    color: rgb(32, 30, 30);
+    right: 60px;
+}
+
+ .m{  position: absolute;
+  top: 310px;
+  left: 90px;
+  color: rgb(180, 13, 13);
+}
+.pu{
+     position: absolute;
+  top: 340px;
+  left: 90px;
+  color: rgb(23, 21, 21);
+}
+.boxi-musique{
+    background-color:rgb(152, 43, 12) ;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 380px;
+    left: 100px;
+    border-radius: 10px;
+
+}
+.boxi-musiqu{
+    background-color: rgb(152, 43, 12);
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 380px;
+    left: 500px;
+     border-radius: 10px;
+}
+.boxi-musiq{
+    background-color: rgb(152, 43, 12);
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 380px;
+    left: 850px;
+     border-radius: 10px;
+}
+.lien-mus{
+    position: absolute;
+    top: 340px;
+    color: rgb(187, 55, 19);
+    right: 90px;
+}
+
+ .s{  position: absolute;
+  top: 585px;
+  left: 90px;
+  color: rgb(21, 23, 21);
+}
+.po{
+     position: absolute;
+  top: 620px;
+  left: 90px;
+  color: rgb(45, 164, 100);
+}
+.boxi-sport{
+    background-color: rgb(27, 122, 90) ;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 660px;
+    left: 100px;
+    border-radius: 10px;
+
+}
+.boxi-spor{
+    background-color: rgb(27, 122, 90);
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 660px;
+    left: 500px;
+     border-radius: 10px;
+}
+.boxi-spo{
+    background-color: rgb(27, 122, 90);
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 660px;
+    left: 850px;
+     border-radius: 10px;
+}
+.lien-spo{
+    position: absolute;
+    top: 620px;
+    color: rgb(15, 152, 59);
+    right: 90px;
+}
+
+ .h{  position: absolute;
+  top: 850px;
+  left: 90px;
+  color: rgb(72, 25, 183);
+}
+.pe{
+     position: absolute;
+  top: 890px;
+  left: 90px;
+  color: rgb(12, 11, 11);
+}
+.boxi-high{
+    background-color: rgb(62, 13, 196) ;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 930px;
+    left: 100px;
+    border-radius: 10px;
+
+}
+.boxi-hig{
+    background-color: rgb(62, 13, 196) ;
+    width: 300px;
+    height: 150px;
+    position: absolute;
+    top: 930px;
+    left: 500px;
+     border-radius: 10px;
+}
+.boxi-hi{
+    background-color: rgb(62, 13, 196);
+    width: 300px;
+    height: 150px;
+    grid-template-columns:repeat(3, 1fr) ;
+    position: absolute;
+    top: 930px;
+    left: 850px;
+     border-radius: 10px;
+}
+.lien-high{
+    position: absolute;
+    top: 890px;
+    color: rgb(12, 12, 12);
+    right: 90px;
+}
