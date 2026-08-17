@@ -2,6 +2,7 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    
 }
 
 
@@ -31,7 +32,8 @@ h3 {
     position: absolute;
     top: 10px;
     left: 180px;
-    color: orange;
+    color: '
+    rgb(28, 12, 137);
 }
 
 .info {
@@ -276,6 +278,7 @@ button a{
 .violet{
     width: 320px;
     background-color: blueviolet;
+
 }
 .red{
     position: absolute;
@@ -492,4 +495,564 @@ main {
     top: 890px;
     color: rgb(12, 12, 12);
     right: 90px;
+}
+
+
+
+@media screen and (max-width: 900px) {
+
+    img {
+        left: 20px;
+        width: 60px;
+        height: 60px;
+    }
+
+    h3 {
+        left: 90px;
+    }
+
+    .jaune {
+        left: 150px;
+    }
+
+    .info {
+        left: 90px;
+    }
+
+    nav {
+        left: 50%;
+        transform: translateX(-50%);
+        top: 80px;
+    }
+
+    nav a {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .connection {
+        right: 110px;
+        top: 15px;
+    }
+
+    .inscription {
+        right: 15px;
+        top: 15px;
+    }
+
+    .edition {
+        left: 25px;
+        top: 170px;
+    }
+
+    .actu {
+        left: 25px;
+        top: 215px;
+        font-size: 34px;
+    }
+
+    body > p.p {
+        left: 25px;
+        top: 300px;
+        font-size: 14px;
+    }
+
+    .insc {
+        left: 25px;
+        top: 360px;
+    }
+
+    .deja {
+        left: 220px;
+        top: 360px;
+    }
+
+    .liste {
+        width: 100%;
+        top: 430px;
+    }
+
+    .violet,
+    .red,
+    .vert,
+    .orange {
+        width: 25vw;
+    }
+
+    .red {
+        left: 25vw;
+    }
+
+    .vert {
+        left: 50vw;
+    }
+
+    .orange {
+        left: 75vw;
+    }
+
+    main {
+        top: 450px;
+        min-height: 1500px;
+        height: auto;
+    }
+
+    .boxi-culture,
+    .boxi-cultur,
+    .boxi-cultu,
+    .boxi-musique,
+    .boxi-musiqu,
+    .boxi-musiq,
+    .boxi-sport,
+    .boxi-spor,
+    .boxi-spo,
+    .boxi-high,
+    .boxi-hig,
+    .boxi-hi {
+        width: 28%;
+        left: auto;
+    }
+
+    .boxi-culture,
+    .boxi-musique,
+    .boxi-sport,
+    .boxi-high {
+        left: 5%;
+    }
+
+    .boxi-cultur,
+    .boxi-musiqu,
+    .boxi-spor,
+    .boxi-hig {
+        left: 36%;
+    }
+
+    .boxi-cultu,
+    .boxi-musiq,
+    .boxi-spo,
+    .boxi-hi {
+        left: 67%;
+    }
+
+    #formulaire {
+        width: 90%;
+        max-width: 420px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #formulair {
+        width: 90%;
+        max-width: 560px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@media screen and (max-width: 600px) {
+
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    img {
+        left: 15px;
+        top: 10px;
+        width: 55px;
+        height: 55px;
+    }
+
+    h3 {
+        left: 80px;
+        top: 12px;
+        font-size: 17px;
+    }
+
+    .jaune {
+        left: 135px;
+        top: 12px;
+    }
+
+    .info {
+        left: 80px;
+        top: 35px;
+        font-size: 8px;
+    }
+    .connection {
+        top: 75px;
+        right: 110px;
+        padding: 7px;
+        font-size: 12px;
+    }
+
+    .inscription {
+        top: 75px;
+        right: 15px;
+        padding: 7px;
+        font-size: 12px;
+    }
+
+    nav {
+        top: 120px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 95%;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    nav a {
+        padding: 7px 6px;
+        font-size: 11px;
+        border-radius: 10px;
+    }
+
+
+    .edition {
+        top: 180px;
+        left: 15px;
+        font-size: 11px;
+    }
+
+    .actu {
+        top: 220px;
+        left: 15px;
+        font-size: 28px;
+        line-height: 1.1;
+    }
+
+    body > p.p {
+        top: 295px;
+        left: 15px;
+        width: calc(100% - 30px);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+
+    .insc {
+        top: 365px;
+        left: 15px;
+        font-size: 11px;
+        padding: 7px;
+    }
+
+    .deja {
+        top: 365px;
+        left: 180px;
+        font-size: 11px;
+        padding: 7px;
+    }
+
+
+    .liste {
+        top: 430px;
+        width: 100%;
+        height: 10px;
+    }
+
+    .violet,
+    .red,
+    .vert,
+    .orange {
+        width: 25vw;
+        height: 10px;
+    }
+
+    .red {
+        left: 25vw;
+    }
+
+    .vert {
+        left: 50vw;
+    }
+
+    .orange {
+        left: 75vw;
+    }
+
+    main {
+        top: 440px;
+        width: 100%;
+        min-height: 1900px;
+        height: auto;
+        position: absolute;
+    }
+    .c {
+        top: 30px;
+        left: 20px;
+        font-size: 24px;
+    }
+
+    .pi {
+        top: 65px;
+        left: 20px;
+        font-size: 13px;
+    }
+
+    .lien-cul {
+        top: 65px;
+        right: 20px;
+        font-size: 13px;
+    }
+    .boxi-culture,
+    .boxi-cultur,
+    .boxi-cultu {
+        top: 105px;
+        width: 29%;
+        height: 130px;
+    }
+
+    .boxi-culture {
+        left: 3%;
+    }
+
+    .boxi-cultur {
+        left: 35.5%;
+    }
+
+    .boxi-cultu {
+        left: 68%;
+    }
+
+    .m {
+        top: 275px;
+        left: 20px;
+        font-size: 24px;
+    }
+
+    .pu {
+        top: 310px;
+        left: 20px;
+        font-size: 13px;
+    }
+
+    .lien-mus {
+        top: 310px;
+        right: 20px;
+        font-size: 13px;
+    }
+
+    .boxi-musique,
+    .boxi-musiqu,
+    .boxi-musiq {
+        top: 350px;
+        width: 29%;
+        height: 130px;
+    }
+
+    .boxi-musique {
+        left: 3%;
+    }
+
+    .boxi-musiqu {
+        left: 35.5%;
+    }
+
+    .boxi-musiq {
+        left: 68%;
+    }
+
+    .s {
+        top: 515px;
+        left: 20px;
+        font-size: 24px;
+    }
+
+    .po {
+        top: 550px;
+        left: 20px;
+        font-size: 13px;
+    }
+
+    .lien-spo {
+        top: 550px;
+        right: 20px;
+        font-size: 13px;
+    }
+
+    .boxi-sport,
+    .boxi-spor,
+    .boxi-spo {
+        top: 590px;
+        width: 29%;
+        height: 130px;
+    }
+
+    .boxi-sport {
+        left: 3%;
+    }
+
+    .boxi-spor {
+        left: 35.5%;
+    }
+
+    .boxi-spo {
+        left: 68%;
+    }
+
+    .h {
+        top: 755px;
+        left: 20px;
+        font-size: 24px;
+    }
+
+    .pe {
+        top: 790px;
+        left: 20px;
+        font-size: 13px;
+    }
+
+    .lien-high {
+        top: 790px;
+        right: 20px;
+        font-size: 13px;
+    }
+
+    .boxi-high,
+    .boxi-hig,
+    .boxi-hi {
+        top: 830px;
+        width: 29%;
+        height: 130px;
+    }
+
+    .boxi-high {
+        left: 3%;
+    }
+
+    .boxi-hig {
+        left: 35.5%;
+    }
+
+    .boxi-hi {
+        left: 68%;
+    }
+
+    #formulaire {
+        position: fixed;
+        z-index: 1000;
+
+        width: 92%;
+        max-width: 420px;
+        height: auto;
+        min-height: 450px;
+
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        padding: 15px;
+        overflow-y: auto;
+    }
+
+    #formulaire h1 {
+        font-size: 22px;
+    }
+
+    #formulaire h5 {
+        font-size: 15px;
+    }
+
+    #formulaire p {
+        position: static;
+        display: block;
+        color: black;
+    }
+
+    #formulaire table {
+        width: 100%;
+    }
+
+    #formulaire td {
+        font-size: 11px;
+    }
+
+    #formulaire input {
+        width: 100%;
+        padding: 9px;
+    }
+
+    #formulair {
+        position: fixed;
+        z-index: 1000;
+
+        width: 92%;
+        max-width: 560px;
+        min-height: 400px;
+
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%);
+
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    #formulair h1 {
+        font-size: 22px;
+    }
+
+    #formulair p {
+        position: static;
+        color: black;
+    }
+
+    #formulair input {
+        width: 100%;
+    }
+
+    .envoi {
+        width: 100%;
+    }
+
+
+    @media screen and (max-width: 380px) {
+
+        nav a {
+            font-size: 9px;
+            padding: 6px 4px;
+        }
+
+        .connection,
+        .inscription {
+            font-size: 10px;
+        }
+
+        .actu {
+            font-size: 24px;
+        }
+
+        body > p.p {
+            font-size: 11px;
+        }
+
+        .insc,
+        .deja {
+            font-size: 9px;
+        }
+
+        .c,
+        .m,
+        .s,
+        .h {
+            font-size: 21px;
+        }
+
+        .pi,
+        .pu,
+        .po,
+        .pe,
+        .lien-cul,
+        .lien-mus,
+        .lien-spo,
+        .lien-high {
+            font-size: 11px;
+        }
+    }
 }
