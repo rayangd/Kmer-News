@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposer un article — Kmer News</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:,">
+<style>
+.propose-wrap { max-width: 720px; margin: 40px auto 70px; padding: 0 24px; }
+.propose-head { text-align: center; margin-bottom: 30px; }
+.propose-head h1 { font-size: 1.7rem; margin-bottom: 8px; }
+.propose-head p { color: var(--text-muted); }
+.propose-form { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 30px; }
+.char-hint { font-size: 0.76rem; color: var(--text-muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<div class="propose-wrap">
+    <div class="propose-head">
+        <h1>✍️ Proposer un article</h1>
+        <p>Partagez une information avec la rédaction Kmer News. Votre article sera relu puis publié après validation par un administrateur.</p>
+    </div>
+
+    <div id="proposeMsg"></div>
+
+    <form id="proposeForm" class="propose-form" enctype="multipart/form-data">
+        <div class="field">
+            <label>Rubrique *</label>
+            <select name="categorie_id" id="p_cat" required>
+                <option value="">— Choisir —</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Titre de l'article *</label>
+            <input type="text" name="titre" id="p_titre" minlength="8" required>
+        </div>
+        <div class="field">
+            <label>Étiquette (ex: Football, Startup...)</label>
+            <input type="text" name="tag" id="p_tag">
+        </div>
+        <div class="field">
+            <label>Chapô (résumé court)</label>
+            <textarea name="chapo" id="p_chapo" rows="2"></textarea>
+        </div>
+        <div class="field">
+            <label>Contenu de l'article *</label>
+            <textarea name="contenu" id="p_contenu" rows="10" minlength="100" required></textarea>
+            <p class="char-hint">100 caractères minimum. Restez factuel et respectueux — votre article sera relu par la rédaction.</p>
+        </div>
+        <div class="field">
+            <label>Image (facultatif)</label>
+            <input type="file" name="image" id="imageInput" accept="image/png,image/jpeg,image/webp">
+            <img id="imagePreview" style="margin-top:10px; border-radius:10px; display:none; max-width:100%;">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Envoyer à la rédaction</button>
+    </form>
+</div>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+renderHeader('..');
+renderFooter('..');
+setupImagePreview('imageInput', 'imagePreview');
+
+(async () => {
+    const session = await KmerAPI.session();
+    if (!session.logged_in) { window.location.href = '../login.html'; return; }
+    if (session.user.role === 'admin') { window.location.href = '../admin/article_form.html'; return; }
+
+    const catData = await KmerAPI.get('categories.php');
+    const select = document.getElementById('p_cat');
+    (catData.categories || []).forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id; opt.textContent = c.nom;
+        select.appendChild(opt);
+    });
+})();
+
+document.getElementById('proposeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    const fd = new FormData(e.target);
+    const r = await KmerAPI.postForm('propose_article.php', fd);
+    btn.disabled = false;
+    const msgEl = document.getElementById('proposeMsg');
+    if (r.data.success) {
+        msgEl.innerHTML = `<div class="alert alert-success">${escapeHtml(r.data.message)}</div>`;
+        e.target.reset();
+        document.getElementById('imagePreview').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        msgEl.innerHTML = `<div class="alert alert-error">${escapeHtml(r.data.message)}</div>`;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+});
+</script>
+</body>
+</html>

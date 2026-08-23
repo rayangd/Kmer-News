@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créer un compte — Kmer News</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="auth-section" style="margin-top:0;">
+    <div class="container">
+        <span class="pill-tag">Compte Kmer News</span>
+        <h2>Créer votre compte</h2>
+        <p>Gratuit, en moins d'une minute.</p>
+
+        <div class="auth-grid" style="grid-template-columns: 1fr; max-width: 440px;">
+            <div class="auth-card register">
+                <div id="registerErrors"></div>
+                <form id="registerForm">
+                    <div class="field field-row">
+                        <div><label>Prénom</label><input type="text" name="prenom" required></div>
+                        <div><label>Nom</label><input type="text" name="nom" required></div>
+                    </div>
+                    <div class="field">
+                        <label>Adresse e-mail</label>
+                        <input type="email" name="email" placeholder="vous@exemple.cm" required>
+                    </div>
+                    <div class="field">
+                        <label>Mot de passe</label>
+                        <input type="password" name="password" placeholder="8 caractères minimum" minlength="8" required>
+                    </div>
+                    <div class="field-check">
+                        <input type="checkbox" required> J'accepte les conditions d'utilisation de Kmer News
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Créer mon compte</button>
+                </form>
+                <p class="form-foot">Déjà inscrit ? <a href="login.html">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = 'api';</script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+renderHeader('.');
+renderFooter('.');
+
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    const r = await KmerAPI.postJson('register.php', {
+        prenom: fd.get('prenom'), nom: fd.get('nom'), email: fd.get('email'), password: fd.get('password')
+    });
+    btn.disabled = false;
+    if (r.data.success) {
+        window.location.href = 'espace/profil.html';
+    } else {
+        document.getElementById('registerErrors').innerHTML = `<div class="alert alert-error">${escapeHtml(r.data.message)}</div>`;
+    }
+});
+</script>
+</body>
+</html>

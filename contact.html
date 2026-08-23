@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Kmer News</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="rubrique-section">
+    <div class="container" style="max-width:600px;">
+        <div class="rubrique-title" style="margin-bottom:26px;">
+            <h2>Contactez la rédaction</h2>
+            <p>Une question, un signalement, une suggestion ? Écrivez-nous.</p>
+        </div>
+
+        <div id="contactResult"></div>
+
+        <form id="contactForm" class="auth-card" style="background:#fff; box-shadow:var(--shadow); border-radius:var(--radius);">
+            <div class="field field-row">
+                <div><label>Nom</label><input type="text" name="nom" required></div>
+                <div><label>E-mail</label><input type="email" name="email" required></div>
+            </div>
+            <div class="field"><label>Sujet</label><input type="text" name="sujet"></div>
+            <div class="field"><label>Message</label><textarea name="contenu" rows="5" required></textarea></div>
+            <button type="submit" class="btn btn-dark btn-block">Envoyer le message</button>
+        </form>
+    </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = 'api';</script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+renderHeader('.');
+renderFooter('.');
+
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const btn = e.target.querySelector('button');
+    btn.disabled = true;
+    const r = await KmerAPI.postJson('contact.php', {
+        nom: fd.get('nom'), email: fd.get('email'), sujet: fd.get('sujet'), contenu: fd.get('contenu')
+    });
+    btn.disabled = false;
+    const resultEl = document.getElementById('contactResult');
+    if (r.data.success) {
+        resultEl.innerHTML = `<div class="alert alert-success">${escapeHtml(r.data.message)}</div>`;
+        e.target.reset();
+        e.target.style.display = 'none';
+    } else {
+        resultEl.innerHTML = `<div class="alert alert-error">${escapeHtml(r.data.message)}</div>`;
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rubrique — Kmer News</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="site-header"></div>
+
+<div id="categoryContent">
+    <div class="container" style="padding:60px 24px;"><p style="color:var(--text-muted);">Chargement…</p></div>
+</div>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = 'api';</script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+renderHeader('.');
+renderFooter('.');
+
+async function loadCategory(page = 1) {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    const container = document.getElementById('categoryContent');
+    if (!slug) { window.location.href = 'index.html'; return; }
+
+    const data = await KmerAPI.get(`articles.php?category=${encodeURIComponent(slug)}&limit=9&page=${page}`);
+    if (!data.success) {
+        container.innerHTML = `<div class="container" style="padding:60px 24px;"><div class="empty-state">Rubrique introuvable.</div></div>`;
+        return;
+    }
+
+    const cat = data.category;
+    const cls = cat.slug === 'high-tech' ? 'hightech' : cat.slug;
+    document.title = cat.nom + ' — Kmer News';
+    const pg = data.pagination;
+    const bannerUrl = rubriqueBannerUrl(cat.slug, '.');
+
+    let html = '';
+    if (bannerUrl) {
+        html += `<div class="category-banner" style="background-image:url('${bannerUrl}');">
+            <div class="category-banner-overlay" style="background:linear-gradient(100deg, ${cat.couleur}E6 0%, ${cat.couleur}99 35%, rgba(0,0,0,0.55) 100%);">
+                <div class="container">
+                    <span class="category-banner-icon">${rubriqueIcon(cat.slug)}</span>
+                    <h1>${escapeHtml(cat.nom)}</h1>
+                    <p>${escapeHtml(cat.description || '')}</p>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    html += `<section class="rubrique-section ${cls}"><div class="container">
+        <div class="rubrique-head">
+            <div class="left">
+                ${bannerUrl ? '' : `<div class="rubrique-title"><h2>${escapeHtml(cat.nom)}</h2><p>${escapeHtml(cat.description || '')} — ${pg.total} article(s)</p></div>`}
+                ${bannerUrl ? `<div class="rubrique-title"><p style="margin:0;">${pg.total} article(s) publié(s)</p></div>` : ''}
+            </div>
+            <a class="voir-tout" href="index.html">← Accueil</a>
+        </div>`;
+
+    if (data.articles.length === 0) {
+        html += `<div class="empty-state">Aucun article publié pour le moment dans cette rubrique.<br>Revenez bientôt !</div>`;
+    } else {
+        html += `<div class="card-grid">` + data.articles.map(a => `
+            <a class="article-card card-${cls}" href="article.html?slug=${encodeURIComponent(a.slug)}">
+                <img class="card-thumb" src="${articleImage(a, 400, 200)}" alt="" loading="lazy">
+                <div>
+                    <div class="tag">${escapeHtml(a.tag || cat.nom)}</div>
+                    <h3>${escapeHtml(a.titre)}</h3>
+                    <p class="excerpt">${escapeHtml(excerpt(a.chapo || a.contenu, 90))}</p>
+                </div>
+                <div class="meta"><span>${timeAgo(a.published_at)}</span><span>👁 ${a.vues}</span></div>
+            </a>`).join('') + `</div>`;
+
+        if (pg.total_pages > 1) {
+            html += `<div class="pagination">`;
+            for (let i = 1; i <= pg.total_pages; i++) {
+                html += `<button type="button" class="page-btn ${i === pg.page ? 'active' : ''}" onclick="loadCategory(${i})">${i}</button>`;
+            }
+            html += `</div>`;
+        }
+    }
+    html += `</div></section>`;
+    container.innerHTML = html;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+loadCategory(1);
+</script>
+</body>
+</html>

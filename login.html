@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion — Kmer News</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="auth-section" style="margin-top:0;">
+    <div class="container">
+        <span class="pill-tag">Compte Kmer News</span>
+        <h2>Content de vous revoir</h2>
+        <p>Connectez-vous pour accéder à votre espace.</p>
+
+        <div class="auth-grid" style="grid-template-columns: 1fr; max-width: 440px;">
+            <div class="auth-card login">
+                <div id="loginErrors"></div>
+                <form id="loginForm">
+                    <div class="field">
+                        <label>Adresse e-mail</label>
+                        <input type="email" name="email" placeholder="vous@exemple.cm" required autofocus>
+                    </div>
+                    <div class="field">
+                        <label>Mot de passe</label>
+                        <input type="password" name="password" placeholder="••••••••" required>
+                    </div>
+                    <div class="field-check">
+                        <input type="checkbox" name="remember"> Rester connecté sur cet appareil
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-block">Se connecter</button>
+                </form>
+                <p class="form-foot">Pas encore de compte ? <a href="register.html">S'inscrire</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = 'api';</script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+renderHeader('.');
+renderFooter('.');
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true;
+    const r = await KmerAPI.postJson('login.php', { email: fd.get('email'), password: fd.get('password') });
+    btn.disabled = false;
+    if (r.data.success) {
+        // === Redirection automatique selon le rôle détecté par l'API ===
+        window.location.href = r.data.role === 'admin' ? 'admin/index.html' : 'espace/profil.html';
+    } else {
+        document.getElementById('loginErrors').innerHTML = `<div class="alert alert-error">${escapeHtml(r.data.message)}</div>`;
+    }
+});
+</script>
+</body>
+</html>

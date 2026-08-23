@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mon espace — Kmer News</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="site-header"></div>
+
+<div id="dashboardZone">
+    <div class="container" style="padding:60px 24px;"><p style="color:var(--text-muted);">Chargement…</p></div>
+</div>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/layout.js"></script>
+<script src="../assets/js/main.js"></script>
+<script>
+renderHeader('..');
+renderFooter('..');
+
+async function loadProfile() {
+    const zone = document.getElementById('dashboardZone');
+    const data = await KmerAPI.get('profile.php');
+
+    if (!data.success) {
+        // Non connecté -> renvoi vers la connexion
+        window.location.href = '../login.html';
+        return;
+    }
+    const u = data.user;
+
+    // Si un admin arrive ici par erreur, on le renvoie vers son propre espace
+    if (u.role === 'admin') {
+        window.location.href = '../admin/index.html';
+        return;
+    }
+
+    zone.innerHTML = `
+    <div class="dashboard-wrap">
+        <div class="profile-card">
+            <div class="profile-banner"></div>
+            <div class="profile-body">
+                <div class="profile-avatar">${escapeHtml((u.prenom||'?').charAt(0).toUpperCase())}</div>
+                <h2>${escapeHtml(u.prenom)} ${escapeHtml(u.nom)}</h2>
+                <span class="role-tag">Compte lecteur</span>
+                <div class="info-grid">
+                    <div class="info-item"><div class="label">Adresse e-mail</div><div class="value">${escapeHtml(u.email)}</div></div>
+                    <div class="info-item"><div class="label">Membre depuis</div><div class="value">${formatDateFr(u.created_at)}</div></div>
+                </div>
+                <div class="dash-actions">
+                    <a href="../index.html" class="btn btn-ghost">← Retour aux actualités</a>
+                    <a href="nouvel_article.html" class="btn btn-primary">✍️ Proposer un article</a>
+                    <a href="#" id="logoutBtn2" class="btn btn-danger">Se déconnecter</a>
+                </div>
+            </div>
+        </div>
+        <div class="stat-mini-grid">
+            <div class="stat-mini"><div class="num">${data.stats.comments}</div><div class="label">Commentaires postés</div></div>
+            <div class="stat-mini"><div class="num">${data.stats.likes}</div><div class="label">Articles aimés</div></div>
+            <div class="stat-mini"><div class="num">${data.stats.propositions}</div><div class="label">Articles proposés</div></div>
+        </div>
+    </div>`;
+
+    document.getElementById('logoutBtn2').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await KmerAPI.postJson('logout.php');
+        window.location.href = '../index.html';
+    });
+}
+loadProfile();
+</script>
+</body>
+</html>

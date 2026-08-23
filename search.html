@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recherche — Kmer News</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="rubrique-section">
+    <div class="container">
+        <div class="rubrique-head">
+            <div class="rubrique-title">
+                <h2 id="searchTitle">Recherche</h2>
+                <p id="searchCount"></p>
+            </div>
+        </div>
+
+        <form id="searchForm" style="max-width:420px; margin-bottom:30px; display:flex; gap:10px;">
+            <input type="text" id="searchInput" name="q" placeholder="Rechercher un article..." style="flex:1; padding:12px 14px; border:1.5px solid var(--gray); border-radius:10px;">
+            <button type="submit" class="btn btn-dark">Rechercher</button>
+        </form>
+
+        <div id="searchResults"></div>
+    </div>
+</section>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = 'api';</script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+renderHeader('.');
+renderFooter('.');
+
+async function runSearch(q) {
+    const resultsEl = document.getElementById('searchResults');
+    document.getElementById('searchTitle').textContent = q ? `Résultats pour « ${q} »` : 'Recherche';
+
+    if (!q) {
+        resultsEl.innerHTML = `<div class="empty-state">Saisissez un mot-clé pour lancer une recherche.</div>`;
+        document.getElementById('searchCount').textContent = '';
+        return;
+    }
+
+    const data = await KmerAPI.get(`search.php?q=${encodeURIComponent(q)}`);
+    document.getElementById('searchCount').textContent = `${data.count} article(s) trouvé(s)`;
+
+    if (data.results.length === 0) {
+        resultsEl.innerHTML = `<div class="empty-state">Aucun article ne correspond à votre recherche.</div>`;
+        return;
+    }
+
+    resultsEl.innerHTML = `<div class="card-grid">` + data.results.map(a => {
+        const cls = a.categorie_nom === 'High-Tech' ? 'hightech' : a.categorie_nom.toLowerCase();
+        return `<a class="article-card card-${cls}" href="article.html?slug=${encodeURIComponent(a.slug)}">
+            <div>
+                <div class="tag">${escapeHtml(a.categorie_nom)}</div>
+                <h3>${escapeHtml(a.titre)}</h3>
+                <p class="excerpt">${escapeHtml(excerpt(a.chapo || a.contenu, 90))}</p>
+            </div>
+            <div class="meta"><span>${timeAgo(a.published_at)}</span></div>
+        </a>`;
+    }).join('') + `</div>`;
+}
+
+const params = new URLSearchParams(window.location.search);
+const initialQ = params.get('q') || '';
+document.getElementById('searchInput').value = initialQ;
+runSearch(initialQ);
+
+document.getElementById('searchForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = document.getElementById('searchInput').value.trim();
+    window.history.pushState({}, '', `search.html?q=${encodeURIComponent(q)}`);
+    runSearch(q);
+});
+</script>
+</body>
+</html>

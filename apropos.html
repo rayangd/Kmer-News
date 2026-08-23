@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>À propos — Kmer News</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:,">
+<style>
+.about-hero { background: var(--bg-dark); color: #fff; padding: 60px 24px; text-align: center; }
+.about-hero h1 { font-size: 2rem; margin-bottom: 12px; }
+.about-hero p { color: #C4CBE8; max-width: 560px; margin: 0 auto; }
+.about-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 900px; margin: 50px auto; padding: 0 24px; }
+.about-card { background: #fff; border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow); }
+.about-card .emoji { font-size: 1.8rem; margin-bottom: 10px; }
+.about-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.about-card p { color: var(--text-muted); font-size: 0.92rem; }
+.values-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 900px; margin: 0 auto 60px; padding: 0 24px; }
+.value-pill { background: #fff; border: 1.5px solid var(--gray); border-radius: 999px; padding: 10px 20px; font-weight: 700; font-size: 0.88rem; color: var(--navy); }
+</style>
+</head>
+<body>
+<div id="site-header"></div>
+
+<section class="about-hero">
+    <span class="hero-badge">Qui sommes-nous ?</span>
+    <h1>Kmer News, l'info en temps réel</h1>
+    <p>Un média d'information digitale pensé pour informer vite, clairement et avec fiabilité les communautés connectées à l'actualité camerounaise.</p>
+</section>
+
+<div class="about-grid">
+    <div class="about-card"><div class="emoji">🚀</div><h3>Notre mission</h3><p>Informer vite, clairement et avec fiabilité pour permettre aux citoyens de comprendre et d'agir.</p></div>
+    <div class="about-card"><div class="emoji">👁️</div><h3>Notre vision</h3><p>Devenir la référence de l'information numérique en Afrique francophone.</p></div>
+    <div class="about-card"><div class="emoji">🧭</div><h3>Notre positionnement</h3><p>Un média d'information digitale en temps réel, au plus près des réalités camerounaises.</p></div>
+    <div class="about-card"><div class="emoji">💎</div><h3>Notre ADN</h3><p>Transformer l'information en contenu accessible, instantané et fiable pour tous.</p></div>
+</div>
+
+<div class="rubrique-title" style="text-align:center; max-width:600px; margin:0 auto 24px;">
+    <h2>Nos valeurs</h2>
+</div>
+<div class="values-row">
+    <span class="value-pill">🛡️ Fiabilité</span>
+    <span class="value-pill">⚡ Rapidité</span>
+    <span class="value-pill">🔍 Transparence</span>
+    <span class="value-pill">📶 Accessibilité</span>
+    <span class="value-pill">💡 Innovation</span>
+    <span class="value-pill">🤝 Proximité</span>
+</div>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = 'api';</script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+<script>renderHeader('.'); renderFooter('.');</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# ============================================================
+# KMER NEWS — Sécurité générale du site
+# ============================================================
+
+# En-têtes de sécurité
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Désactive l'affichage du contenu des dossiers
+Options -Indexes
+
+# Cache les fichiers sensibles
+<FilesMatch "\.(sql|env|log|md)$">
+    Require all denied
+</FilesMatch>

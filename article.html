@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — Kmer News</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="site-header"></div>
+
+<div id="articleContent">
+    <div class="container" style="padding:60px 24px;"><p style="color:var(--text-muted);">Chargement de l'article…</p></div>
+</div>
+
+<div id="site-footer"></div>
+
+<script>window.KMER_API_BASE = 'api';</script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+let CURRENT_ARTICLE = null;
+
+async function loadArticle() {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    const container = document.getElementById('articleContent');
+    if (!slug) { window.location.href = 'index.html'; return; }
+
+    const data = await KmerAPI.get(`article.php?slug=${encodeURIComponent(slug)}`);
+    if (!data.success) {
+        container.innerHTML = `<div class="container" style="padding:60px 24px;"><div class="empty-state">Cet article n'existe pas ou n'est plus disponible.<br><br><a href="index.html" class="btn btn-dark">Retour à l'accueil</a></div></div>`;
+        return;
+    }
+
+    CURRENT_ARTICLE = data.article;
+    const a = data.article;
+    document.title = a.titre + ' — Kmer News';
+
+    const paragraphs = a.contenu.split('\n').filter(p => p.trim() !== '')
+        .map(p => `<p>${escapeHtml(p.trim())}</p>`).join('');
+
+    container.innerHTML = `
+    <div class="article-hero">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Accueil</a> /
+                <a href="category.html?slug=${encodeURIComponent(a.categorie_slug)}">${escapeHtml(a.categorie_nom)}</a>
+            </div>
+            <span class="cat-badge" style="background:${a.categorie_couleur}">${escapeHtml(a.categorie_nom)}</span>
+            <h1>${escapeHtml(a.titre)}</h1>
+            ${a.sous_titre ? `<p class="subtitle">${escapeHtml(a.sous_titre)}</p>` : ''}
+            <div class="article-meta">
+                <span>✍️ ${escapeHtml(a.auteur_prenom)} ${escapeHtml(a.auteur_nom)}</span>
+                <span>📅 ${formatDateFr(a.published_at)}</span>
+                <span>👁 ${a.vues} vues</span>
+                <span>💬 <span id="commentCount">${data.comment_count}</span> commentaires</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <div class="article-body" style="padding:40px 0 0;">
+                ${`<div class="article-image-full"><img src="${articleImage(a, 900, 420)}" alt="${escapeHtml(a.titre)}"></div>`}
+                <div class="article-content">${paragraphs}</div>
+
+                <div class="article-actions">
+                    <button id="likeBtn" class="like-btn ${data.liked_by_me ? 'liked' : ''}">
+                        ❤️ <span id="likeCount">${data.like_count}</span> J'aime
+                    </button>
+                    <div class="share-btns">
+                        <a href="https://wa.me/?text=${encodeURIComponent(a.titre + ' - ' + window.location.href)}" target="_blank" rel="noopener">W</a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}" target="_blank" rel="noopener">f</a>
+                    </div>
+                </div>
+
+                <div class="comments-section">
+                    <h3>💬 Commentaires (<span id="commentCount2">${data.comment_count}</span>)</h3>
+                    <div id="commentFormZone"></div>
+                    <div id="commentsList">${renderComments(data.comments)}</div>
+                </div>
+            </div>
+        </div>
+
+        <aside>
+            <div class="sidebar-block">
+                <h4>📰 Articles similaires</h4>
+                ${data.related.length === 0
+                    ? `<p style="color:var(--text-muted); font-size:0.9rem;">Aucun autre article dans cette rubrique.</p>`
+                    : data.related.map(r => `<div class="mini-article"><span class="dot" style="background:${r.categorie_couleur}"></span><a href="article.html?slug=${encodeURIComponent(r.slug)}">${escapeHtml(r.titre)}</a></div>`).join('')}
+            </div>
+            <div class="sidebar-block">
+                <h4>🔥 Articles populaires</h4>
+                ${data.popular.map(p => `<div class="mini-article"><span class="dot" style="background:${p.categorie_couleur}"></span><a href="article.html?slug=${encodeURIComponent(p.slug)}">${escapeHtml(p.titre)}</a></div>`).join('')}
+            </div>
+        </aside>
+    </div>`;
+
+    document.getElementById('likeBtn').addEventListener('click', handleLike);
+    renderCommentForm();
+}
+
+function renderComments(comments) {
+    if (comments.length === 0) {
+        return `<p id="noComments" style="color:var(--text-muted);">Soyez le premier à commenter cet article.</p>`;
+    }
+    return comments.map(c => `
+        <div class="comment">
+            <span class="avatar-mini">${escapeHtml((c.prenom||'?').charAt(0).toUpperCase())}</span>
+            <div class="body">
+                <span class="who">${escapeHtml(c.prenom)} ${escapeHtml(c.nom)}<span class="when">${timeAgo(c.created_at)}</span></span>
+                <p class="text">${escapeHtml(c.contenu)}</p>
+            </div>
+        </div>`).join('');
+}
+
+async function handleLike() {
+    const session = window.KMER_SESSION;
+    if (!session || !session.logged_in) { window.location.href = 'login.html'; return; }
+
+    const btn = document.getElementById('likeBtn');
+    btn.disabled = true;
+    const r = await KmerAPI.postJson('like.php', { article_id: CURRENT_ARTICLE.id });
+    btn.disabled = false;
+    if (r.data.success) {
+        btn.classList.toggle('liked', r.data.liked);
+        document.getElementById('likeCount').textContent = r.data.count;
+    } else if (r.data.message) {
+        alert(r.data.message);
+    }
+}
+
+function renderCommentForm() {
+    const zone = document.getElementById('commentFormZone');
+    const session = window.KMER_SESSION;
+    if (session && session.logged_in) {
+        zone.innerHTML = `
+            <form id="commentForm">
+                <div class="field"><textarea name="contenu" rows="3" placeholder="Partagez votre avis sur cet article..." required></textarea></div>
+                <button type="submit" class="btn btn-dark">Publier le commentaire</button>
+            </form>`;
+        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const textarea = e.target.querySelector('textarea');
+            const btn = e.target.querySelector('button');
+            const content = textarea.value.trim();
+            if (!content) return;
+            btn.disabled = true;
+            const r = await KmerAPI.postJson('comment.php', { article_id: CURRENT_ARTICLE.id, contenu: content });
+            btn.disabled = false;
+            if (r.data.success) {
+                const list = document.getElementById('commentsList');
+                const empty = document.getElementById('noComments');
+                if (empty) empty.remove();
+                list.insertAdjacentHTML('afterbegin', renderComments([r.data.comment]));
+                textarea.value = '';
+                const c1 = document.getElementById('commentCount');
+                const c2 = document.getElementById('commentCount2');
+                c1.textContent = parseInt(c1.textContent, 10) + 1;
+                c2.textContent = parseInt(c2.textContent, 10) + 1;
+            } else {
+                alert(r.data.message || "Impossible d'envoyer le commentaire.");
+            }
+        });
+    } else {
+        zone.innerHTML = `<div class="alert alert-info"><a href="login.html" style="font-weight:800;">Connectez-vous</a> pour laisser un commentaire.</div>`;
+    }
+}
+
+renderHeader('.');
+renderFooter('.');
+loadArticle();
+document.addEventListener('kmer:session-ready', renderCommentForm);
+</script>
+</body>
+</html>
