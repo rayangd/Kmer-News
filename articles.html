@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Articles — Kmer News Admin</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="admin-root"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-layout.js"></script>
+<script>
+let ALL_CATEGORIES = [];
+
+async function loadArticlesList(filters = {}) {
+    const qs = new URLSearchParams(filters).toString();
+    const data = await KmerAPI.get(`admin/articles.php${qs ? '?' + qs : ''}`);
+    const tbody = document.getElementById('articlesTableBody');
+    if (!data.success) { adminFlash('error', data.message); return; }
+
+    if (data.articles.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8">Aucun article trouvé.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = data.articles.map(a => `
+        <tr>
+            <td style="max-width:260px;">${escapeHtml(excerpt(a.titre, 55))} ${a.auteur_role === 'user' ? '<span class="badge badge-blue" title="Proposition d\'un lecteur">Proposition</span>' : ''}</td>
+            <td><span class="color-dot" style="background:${a.cat_couleur}"></span>${escapeHtml(a.cat_nom)}</td>
+            <td>${escapeHtml(a.prenom)} ${escapeHtml(a.nom)}</td>
+            <td>${a.statut === 'publie' ? '<span class="badge badge-green">Publié</span>' : '<span class="badge badge-yellow">Brouillon</span>'}</td>
+            <td>${a.a_la_une == 1 ? '⭐' : '—'}</td>
+            <td>${a.vues}</td>
+            <td>${formatDateFr(a.created_at)}</td>
+            <td>
+                <div class="action-icons">
+                    <a href="../article.html?slug=${encodeURIComponent(a.slug)}" target="_blank" title="Voir">👁</a>
+                    <a href="article_form.html?id=${a.id}" title="Modifier / Publier">✏️</a>
+                    <button type="button" class="confirm-delete" data-confirm="Supprimer définitivement cet article ?" onclick="deleteArticle(${a.id})" title="Supprimer">🗑️</button>
+                </div>
+            </td>
+        </tr>`).join('');
+}
+
+async function deleteArticle(id) {
+    const r = await KmerAPI.del('admin/articles.php', { id });
+    if (r.data.success) {
+        adminFlash('success', r.data.message);
+        loadArticlesList(currentFilters());
+    } else {
+        adminFlash('error', r.data.message);
+    }
+}
+
+function currentFilters() {
+    return {
+        q: document.getElementById('fQ')?.value || '',
+        cat: document.getElementById('fCat')?.value || '0',
+        statut: document.getElementById('fStatut')?.value || '',
+    };
+}
+
+(async () => {
+    const admin = await guardAdminPage();
+    if (!admin) return;
+    renderAdminLayout(admin, 'articles', 'Articles');
+
+    const catData = await KmerAPI.get('categories.php');
+    ALL_CATEGORIES = catData.categories || [];
+
+    document.getElementById('adminBody').innerHTML = `
+    <div class="toolbar">
+        <form id="filterForm" style="display:flex; gap:10px; flex-wrap:wrap; flex:1;">
+            <input type="search" id="fQ" placeholder="Rechercher un titre...">
+            <select id="fCat">
+                <option value="0">Toutes les rubriques</option>
+                ${ALL_CATEGORIES.map(c => `<option value="${c.id}">${escapeHtml(c.nom)}</option>`).join('')}
+            </select>
+            <select id="fStatut">
+                <option value="">Tous statuts</option>
+                <option value="publie">Publié</option>
+                <option value="brouillon">Brouillon</option>
+            </select>
+            <button type="submit" class="btn btn-ghost btn-sm">Filtrer</button>
+        </form>
+        <a href="article_form.html" class="btn btn-primary">+ Nouvel article</a>
+    </div>
+    <div class="panel">
+        <table class="admin-table">
+            <thead><tr><th>Titre</th><th>Rubrique</th><th>Auteur</th><th>Statut</th><th>Une</th><th>Vues</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="articlesTableBody"><tr><td colspan="8">Chargement…</td></tr></tbody>
+        </table>
+    </div>`;
+
+    document.getElementById('filterForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        loadArticlesList(currentFilters());
+    });
+
+    // Pré-remplit les filtres si on arrive depuis le dashboard ou la page Rubriques
+    const urlParams = new URLSearchParams(window.location.search);
+    const preselectCat = urlParams.get('cat');
+    const preselectStatut = urlParams.get('statut');
+    if (preselectCat) document.getElementById('fCat').value = preselectCat;
+    if (preselectStatut) document.getElementById('fStatut').value = preselectStatut;
+    if (preselectCat || preselectStatut) {
+        loadArticlesList(currentFilters());
+    } else {
+        loadArticlesList();
+    }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages — Kmer News Admin</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="admin-root"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-layout.js"></script>
+<script>
+async function loadMessages() {
+    const data = await KmerAPI.get('admin/messages.php');
+    const panel = document.getElementById('messagesPanel');
+    if (!data.success) { adminFlash('error', data.message); return; }
+
+    if (data.messages.length === 0) {
+        panel.innerHTML = `<div class="panel-body">Aucun message reçu pour le moment.</div>`;
+        return;
+    }
+
+    panel.innerHTML = data.messages.map(m => `
+        <div class="panel-body" style="border-bottom:1px solid var(--gray); ${m.lu == 1 ? 'opacity:.6;' : ''}">
+            <div style="display:flex; justify-content:space-between; align-items:start; gap:16px;">
+                <div>
+                    <strong>${escapeHtml(m.nom)}</strong> — <span style="color:var(--text-muted);">${escapeHtml(m.email)}</span>
+                    ${m.lu == 0 ? '<span class="badge badge-blue" style="margin-left:8px;">Nouveau</span>' : ''}
+                    <p style="margin-top:6px; font-weight:700;">${escapeHtml(m.sujet || '(sans sujet)')}</p>
+                    <p style="margin-top:4px; color:#333;">${escapeHtml(m.contenu)}</p>
+                    <p style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${timeAgo(m.created_at)}</p>
+                </div>
+                <div class="action-icons">
+                    ${m.lu == 0 ? `<button type="button" onclick="markRead(${m.id})" title="Marquer comme lu">✅</button>` : ''}
+                    <button type="button" class="confirm-delete" data-confirm="Supprimer ce message ?" onclick="deleteMessage(${m.id})" title="Supprimer">🗑️</button>
+                </div>
+            </div>
+        </div>`).join('');
+}
+
+async function markRead(id) {
+    await KmerAPI.postJson('admin/messages.php', { id, action: 'read' });
+    loadMessages();
+}
+
+async function deleteMessage(id) {
+    const r = await KmerAPI.del('admin/messages.php', { id });
+    if (r.data.success) loadMessages();
+    else adminFlash('error', r.data.message);
+}
+
+(async () => {
+    const admin = await guardAdminPage();
+    if (!admin) return;
+    renderAdminLayout(admin, 'messages', 'Messages de contact');
+
+    document.getElementById('adminBody').innerHTML = `<div class="panel" id="messagesPanel"><div class="panel-body">Chargement…</div></div>`;
+    loadMessages();
+})();
+</script>
+</body>
+</html>

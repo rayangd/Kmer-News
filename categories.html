@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catégories — Kmer News Admin</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="admin-root"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-layout.js"></script>
+<script>
+async function loadCategories() {
+    const data = await KmerAPI.get('admin/categories.php');
+    const tbody = document.getElementById('catTableBody');
+    if (!data.success) { adminFlash('error', data.message); return; }
+
+    tbody.innerHTML = data.categories.map(c => `
+        <tr>
+            <td><span class="color-swatch" style="background:${c.couleur}"></span></td>
+            <td style="font-weight:700;">${escapeHtml(c.nom)}</td>
+            <td>${escapeHtml(c.description || '')}</td>
+            <td>${c.nb_articles}</td>
+            <td>
+                <div class="action-icons">
+                    <button type="button" title="Modifier" onclick='fillCatForm(${JSON.stringify(c)})'>✏️</button>
+                    <button type="button" class="confirm-delete" data-confirm="Supprimer cette rubrique ?" onclick="deleteCategory(${c.id})" title="Supprimer">🗑️</button>
+                </div>
+            </td>
+        </tr>`).join('');
+}
+
+function fillCatForm(cat) {
+    document.getElementById('formTitle').textContent = `Modifier « ${cat.nom} »`;
+    document.getElementById('edit_id').value = cat.id;
+    document.getElementById('c_nom').value = cat.nom;
+    document.getElementById('c_description').value = cat.description || '';
+    document.getElementById('c_couleur').value = cat.couleur;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function deleteCategory(id) {
+    const r = await KmerAPI.del('admin/categories.php', { id });
+    if (r.data.success) { adminFlash('success', r.data.message); loadCategories(); }
+    else { adminFlash('error', r.data.message); }
+}
+
+(async () => {
+    const admin = await guardAdminPage();
+    if (!admin) return;
+    renderAdminLayout(admin, 'categories', 'Catégories');
+
+    document.getElementById('adminBody').innerHTML = `
+    <div class="form-grid-2">
+        <div class="panel">
+            <div class="panel-head"><h3>Rubriques existantes</h3></div>
+            <table class="admin-table">
+                <thead><tr><th>Couleur</th><th>Nom</th><th>Description</th><th>Articles</th><th>Actions</th></tr></thead>
+                <tbody id="catTableBody"><tr><td colspan="5">Chargement…</td></tr></tbody>
+            </table>
+        </div>
+        <div class="panel">
+            <div class="panel-head"><h3 id="formTitle">Ajouter une rubrique</h3></div>
+            <div class="panel-body">
+                <form id="catForm">
+                    <input type="hidden" id="edit_id" value="">
+                    <div class="field"><label>Nom de la rubrique</label><input type="text" id="c_nom" required></div>
+                    <div class="field"><label>Description</label><input type="text" id="c_description"></div>
+                    <div class="field"><label>Couleur</label><input type="color" id="c_couleur" value="#0048D9" style="height:44px;"></div>
+                    <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+                </form>
+            </div>
+        </div>
+    </div>`;
+
+    document.getElementById('catForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            id: document.getElementById('edit_id').value || null,
+            nom: document.getElementById('c_nom').value,
+            description: document.getElementById('c_description').value,
+            couleur: document.getElementById('c_couleur').value,
+        };
+        const r = await KmerAPI.postJson('admin/categories.php', payload);
+        if (r.data.success) {
+            adminFlash('success', r.data.message);
+            e.target.reset();
+            document.getElementById('edit_id').value = '';
+            document.getElementById('formTitle').textContent = 'Ajouter une rubrique';
+            loadCategories();
+        } else {
+            adminFlash('error', r.data.message);
+        }
+    });
+
+    loadCategories();
+})();
+</script>
+</body>
+</html>

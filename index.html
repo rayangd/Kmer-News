@@ -1,248 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KamerNews </title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de bord — Kmer News Admin</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="icon" href="data:,">
 </head>
 <body>
+<div id="admin-root"></div>
 
-    <header>
-    <div class="logo"><img src="LOGUS.jpeg" alt=""> <h3>KMER <h3 class="jaune">NEWS</h3></h3>
-    <p class="info">L'INFO EN TEMPS REELS</p>
-    </div>
-    <nav>
-        <a href="#" class="culture">Culture</a>
-        <a href="" class="musique">Musique</a>
-        <a href="" class="sport">Sport</a>
-        <a href="" class="high-tech">High-Tech</a>
-    </nav>
-     <a href="#formulair" class="connection" id="bouton-connexion" onclick="Connexion(); ">Connexion</a>
-       <a href="#formulaire" class="inscription" id="bouton-inscription" onclick="Inscription(); ">S'inscrire</a>
-     </header>
-   
- <form action="" id="formulaire">
-    <h5>INSCRIPTION</h5>
-    <h1>Creer votre compte</h1> <br>
-    <p>Gratuit, en moin d'une minute.</p> <br>
-    <table >
-        <tr>
-            <td>PRENOM</td>
-            <td>NOM</td>
-        </tr>
-        <tr>
-            <td><input type="text" placeholder="Rayan"></td>
-            <td><input type="text" placeholder="Tchoconte"></td>
-        </tr>
-        <tr>
-            <td>ADRESSE E-MAIL</td>
-        </tr>
-        <tr >
-       <td colspan="2"><input type="email" placeholder="VOUS@gmail.com" class="inpu"></td>
-        </tr>
-        <tr>
-            <td>MOT DE PASSE</td>
-        
-        </tr>
-        <tr>
-            <td colspan="2  "><input type="password" placeholder="8 caracteres minimum" class="inpu"></td>
-        </tr>
-        <tr>
-            <td ><input type="checkbox" class="checkbox"> <p class="accepte"> j'accepte les conditions de Kmer News</p></td>
-        </tr>
-        <tr>
-            <td><button type="submit" class="envoie">Creer mom compte</button></td>
-        </tr>
-            </table>
-           <a href="#" onclick="Inscription(); Connexion(); ">Se connecter</a></p>
-            </form>
-             <form action="" id="formulair">
-    <h5 class="conne">CONNEXION</h5>
-    <h1>Content de vous revoir</h1> <br>
-    <p>Accedez a votre fil personnaliser</p> <br>
-        <tr>
-            <label for="">ADRESSE E-MAIL</td></label>
-        </tr>
-        <tr >
-       <td colspan="2"><input type="email" placeholder="VOUS@gmail.com" class="inpu"></td>
-        </tr>
-        <tr>
-            <label for="">MOT DE PASSE</label>
-        
-        </tr>
-        <tr>
-            <td colspan="2  "><input type="password" placeholder="8 caracteres minimum" class="inpu"></td>
-        </tr>
-        <input type="checkbox" class="checkbox">
-       <p class="accept">Rester connecter</p>
-        
-        <tr>
-            <td><button type="submit" class="envoi">Se connecter</button></td>
-        </tr>
-        <p class="dj">Mot de passe oublie ? <a href="#">Reinitialiser</a></p>
-         </form>
-         <p class="edition">Edition du 13 aout 2026</p>
-         <p class="actu">L'actu <br>camerounaise,
-        tissee serree.</p>
-        <p class="p">Quatre rubrique, une seule etoffe:culture,musique, sport <br>et high-tech racntent le cameroun d'aujourd'huit</p>
-    <a href="#formulaire" class="insc" onclick="Inscription();">Créer un compte gratuit</a> 
-        <a href="#formulair" class="deja" onclick="Connexion();">J'ai déjà un compte</a>
-           
-        
-            <div class="liste">
-                    <li class="violet"></li>
-                    <li class="red"></li>
-                    <li class="vert"></li>
-                        <li class="orange"></li>
-            </div>
-         <main>
-        <div class="boxing">
-        <div class="cul">
-            <h2 class="c">Culture</h2>
-            <p class="pi">Patrimoine,art ,traditions</p>
-            <a href="" class="lien-cul">savoir plus</a>
-            <div class="boxi-culture">
-                  
-            </div>
-                  <div class="boxi-cultur">
-                  
-            </div>
-                  <div class="boxi-cultu">
-                  
-            </div>
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-layout.js"></script>
+<script>
+(async () => {
+    const admin = await guardAdminPage();
+    if (!admin) return;
+    renderAdminLayout(admin, 'dashboard', 'Tableau de bord');
 
+    const data = await KmerAPI.get('admin/dashboard.php');
+    if (!data.success) { adminFlash('error', data.message); return; }
+
+    const s = data.stats;
+    let html = `
+    <div class="stats-row">
+        <div class="stat-card"><div class="icon">📰</div><div class="num">${s.articles}</div><div class="label">Articles publiés ${s.brouillons ? `· ${s.brouillons} brouillon(s)` : ''}</div></div>
+        <div class="stat-card c-sport"><div class="icon">👁</div><div class="num">${s.vues}</div><div class="label">Vues cumulées</div></div>
+        <div class="stat-card c-culture"><div class="icon">👥</div><div class="num">${s.users}</div><div class="label">Utilisateurs inscrits</div></div>
+        <div class="stat-card c-musique"><div class="icon">💬</div><div class="num">${s.comments}</div><div class="label">Commentaires</div></div>
+    </div>`;
+
+    if (s.messages_non_lus > 0) {
+        html += `<div class="alert alert-info">📬 Vous avez <strong>${s.messages_non_lus}</strong> nouveau(x) message(s) de contact non lu(s). <a href="messages.html" style="font-weight:800;">Voir les messages →</a></div>`;
+    }
+    if (s.propositions_lecteurs > 0) {
+        html += `<div class="alert alert-info">✍️ <strong>${s.propositions_lecteurs}</strong> article(s) proposé(s) par des lecteurs en attente de relecture. <a href="articles.html?statut=brouillon" style="font-weight:800;">Voir les propositions →</a></div>`;
+    }
+
+    html += `<div class="panel"><div class="panel-head"><h3>Répartition des articles par rubrique</h3></div>
+        <div class="panel-body"><div class="stats-row" style="margin-bottom:0;">` +
+        data.cat_stats.map(cs => `
+            <div class="stat-card" style="border-top-color:${cs.couleur};">
+                <div class="num">${cs.count}</div>
+                <div class="label"><span class="color-dot" style="background:${cs.couleur}"></span>${escapeHtml(cs.nom)}</div>
+            </div>`).join('') +
+        `</div></div></div>`;
+
+    html += `<div class="form-grid-2">
+        <div class="panel">
+            <div class="panel-head"><h3>Derniers articles</h3><a href="articles.html" class="btn btn-sm btn-ghost">Voir tout</a></div>
+            <table class="admin-table"><thead><tr><th>Titre</th><th>Rubrique</th><th>Statut</th><th>Vues</th></tr></thead><tbody>` +
+            (data.recent_articles.length === 0 ? `<tr><td colspan="4">Aucun article pour le moment.</td></tr>` :
+            data.recent_articles.map(a => `
+                <tr>
+                    <td><a href="article_form.html?id=${a.id}" style="font-weight:700;">${escapeHtml(excerpt(a.titre, 40))}</a></td>
+                    <td><span class="color-dot" style="background:${a.cat_couleur}"></span>${escapeHtml(a.cat_nom)}</td>
+                    <td>${a.statut === 'publie' ? '<span class="badge badge-green">Publié</span>' : '<span class="badge badge-yellow">Brouillon</span>'}</td>
+                    <td>${a.vues}</td>
+                </tr>`).join('')) +
+            `</tbody></table>
         </div>
-         <div class="mus">
-            <h2 class="m">Musique</h2>
-            <p class="pu">Makossa, bikusti, afrobeat</p>
-            <a href="" class="lien-mus">savoir plus</a>
-            <div class="boxi-musique">
-                  
-            </div>
-                  <div class="boxi-musiqu">
-                  
-            </div>
-                  <div class="boxi-musiq">
-                  
-            </div>
-
+        <div class="panel">
+            <div class="panel-head"><h3>Derniers commentaires</h3></div>
+            <div class="panel-body" style="padding-top:8px;">` +
+            (data.recent_comments.length === 0 ? `<p style="color:var(--text-muted); font-size:0.88rem;">Aucun commentaire pour le moment.</p>` :
+            data.recent_comments.map(c => `
+                <div class="comment" style="padding:12px 0;">
+                    <span class="avatar-mini">${escapeHtml((c.prenom||'?').charAt(0).toUpperCase())}</span>
+                    <div class="body">
+                        <span class="who" style="font-size:0.85rem;">${escapeHtml(c.prenom)} ${escapeHtml(c.nom)}<span class="when">${timeAgo(c.created_at)}</span></span>
+                        <p class="text" style="font-size:0.85rem;">${escapeHtml(excerpt(c.contenu, 70))}</p>
+                        <a href="../article.html?slug=${encodeURIComponent(c.article_slug)}" style="font-size:0.78rem; color:var(--blue); font-weight:700;" target="_blank">Voir l'article →</a>
+                    </div>
+                </div>`).join('')) +
+            `</div>
         </div>
-           <div class="spor">
-            <h2 class="s">Sport</h2>
-            <p class="po">Lions indomptable et au-dela</p>
-            <a href="" class="lien-spo">savoir plus</a>
-            <div class="boxi-sport">
-                  
-            </div>
-                  <div class="boxi-spor">
-                  
-            </div>
-                  <div class="boxi-spo">
-                  
-            </div>
+    </div>`;
 
-        </div>
-
-          <div class="high">
-            <h2 class="h">High-Tech</h2>
-            <p class="pe">Silicon mountain et innovation local</p>
-            <a href="" class="lien-high">savoir plus</a>
-            <div class="boxi-high">
-                  
-            </div>
-                  <div class="boxi-hig">
-                  
-            </div>
-                  <div class="boxi-hi">
-                  
-            </div>
-
-        </div>
-    </div>
-    </main>
-      
- <form action="" id="formulaire">
-    <h5>INSCRIPTION</h5>
-    <h1>Creer votre compte</h1> <br>
-    <p>Gratuit, en moin d'une minute.</p> <br>
-    <table >
-        <tr>
-            <td>PRENOM</td>
-            <td>NOM</td>
-        </tr>
-        <tr>
-            <td><input type="text" placeholder="Rayan"></td>
-            <td><input type="text" placeholder="Tchoconte"></td>
-        </tr>
-        <tr>
-            <td>ADRESSE E-MAIL</td>
-        </tr>
-        <tr >
-       <td colspan="2"><input type="email" placeholder="VOUS@gmail.com" class="inpu"></td>
-        </tr>
-        <tr>
-            <td>MOT DE PASSE</td>
-        
-        </tr>
-        <tr>
-            <td colspan="2  "><input type="password" placeholder="8 caracteres minimum" class="inpu"></td>
-        </tr>
-        <tr>
-            <td ><input type="checkbox" class="checkbox"> <p class="accepte"> j'accepte les conditions de Kmer News</p></td>
-        </tr>
-        <tr>
-            <td><button type="submit" class="envoie">Creer mom compte</button></td>
-        </tr>
-            </table>
-           <a href="#" onclick="Inscription(); Connexion(); ">Se connecter</a></p>
-            </form>
-         
-
-                   <form action="" id="formulair">
-    <h5 class="conne">CONNEXION</h5>
-    <h1>Content de vous revoir</h1> <br>
-    <p>Accedez a votre fil personnaliser</p> <br>
-        <tr>
-            <label for="">ADRESSE E-MAIL</td></label>
-        </tr>
-        <tr >
-       <td colspan="2"><input type="email" placeholder="VOUS@gmail.com" class="inpu"></td>
-        </tr>
-        <tr>
-            <label for="">MOT DE PASSE</label>
-        
-        </tr>
-        <tr>
-            <td colspan="2  "><input type="password" placeholder="8 caracteres minimum" class="inpu"></td>
-        </tr>
-        <input type="checkbox" class="checkbox">
-       <p class="accept">Rester connecter</p>
-        
-        <tr>
-            <td><button type="submit" class="envoi">Se connecter</button></td>
-        </tr>
-        <p class="dj">Mot de passe oublie ? <a href="#">Reinitialiser</a></p>
-         </form>
-        
-
- <script>
-   function Connexion() {
-            const formulaireConnexion = document.getElementById("formulair");
-            formulaireConnexion.style.display =
-                (formulaireConnexion.style.display === "none" || formulaireConnexion.style.display === "")
-                    ? "block"
-                    : "none";
-        }
- 
-        function Inscription() {
-            const formulaireInscription = document.getElementById("formulaire");
-            formulaireInscription.style.display =
-                (formulaireInscription.style.display === "none" || formulaireInscription.style.display === "")
-                    ? "block"
-                    : "none";
-        }
-    </script>
- </script>
+    document.getElementById('adminBody').innerHTML = html;
+})();
+</script>
 </body>
 </html>

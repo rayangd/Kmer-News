@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Utilisateurs — Kmer News Admin</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="admin-root"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-layout.js"></script>
+<script>
+async function loadUsers(q = '') {
+    const data = await KmerAPI.get(`admin/users.php${q ? '?q=' + encodeURIComponent(q) : ''}`);
+    const tbody = document.getElementById('usersTableBody');
+    if (!data.success) { adminFlash('error', data.message); return; }
+
+    if (data.users.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">Aucun utilisateur inscrit pour le moment.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = data.users.map(u => `
+        <tr>
+            <td style="font-weight:700;">${escapeHtml(u.prenom)} ${escapeHtml(u.nom)}</td>
+            <td>${escapeHtml(u.email)}</td>
+            <td>${formatDateFr(u.created_at)}</td>
+            <td>${u.nb_comments}</td>
+            <td>${u.nb_likes}</td>
+            <td>${u.statut === 'actif' ? '<span class="badge badge-green">Actif</span>' : '<span class="badge badge-red">Suspendu</span>'}</td>
+            <td>
+                <div class="action-icons">
+                    <button type="button" onclick="toggleUser(${u.id})" title="${u.statut === 'actif' ? 'Suspendre' : 'Réactiver'}">${u.statut === 'actif' ? '⛔' : '✅'}</button>
+                    <button type="button" class="confirm-delete" data-confirm="Supprimer définitivement ce compte ?" onclick="deleteUser(${u.id})" title="Supprimer">🗑️</button>
+                </div>
+            </td>
+        </tr>`).join('');
+}
+
+async function toggleUser(id) {
+    const r = await KmerAPI.postJson('admin/users.php', { id, action: 'toggle' });
+    if (r.data.success) { adminFlash('success', r.data.message); loadUsers(document.getElementById('userSearch').value); }
+    else { adminFlash('error', r.data.message); }
+}
+
+async function deleteUser(id) {
+    const r = await KmerAPI.del('admin/users.php', { id });
+    if (r.data.success) { adminFlash('success', r.data.message); loadUsers(document.getElementById('userSearch').value); }
+    else { adminFlash('error', r.data.message); }
+}
+
+(async () => {
+    const admin = await guardAdminPage();
+    if (!admin) return;
+    renderAdminLayout(admin, 'users', 'Utilisateurs');
+
+    document.getElementById('adminBody').innerHTML = `
+    <div class="toolbar">
+        <input type="search" id="userSearch" placeholder="Rechercher un utilisateur..." style="width:100%; max-width:320px;">
+    </div>
+    <div class="panel">
+        <table class="admin-table">
+            <thead><tr><th>Nom</th><th>E-mail</th><th>Inscrit le</th><th>Commentaires</th><th>Likes</th><th>Statut</th><th>Actions</th></tr></thead>
+            <tbody id="usersTableBody"><tr><td colspan="7">Chargement…</td></tr></tbody>
+        </table>
+    </div>`;
+
+    document.getElementById('userSearch').addEventListener('input', (e) => loadUsers(e.target.value));
+    loadUsers();
+})();
+</script>
+</body>
+</html>

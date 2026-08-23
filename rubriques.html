@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rubriques — Kmer News Admin</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="admin-root"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-layout.js"></script>
+<script>
+function darken(hex, amount = 0.35) {
+    const c = hex.replace('#', '');
+    const r = Math.round(parseInt(c.substr(0,2),16) * (1 - amount));
+    const g = Math.round(parseInt(c.substr(2,2),16) * (1 - amount));
+    const b = Math.round(parseInt(c.substr(4,2),16) * (1 - amount));
+    return `rgb(${r},${g},${b})`;
+}
+
+function renderRubriqueCard(item) {
+    const cat = item.category;
+    const s = item.stats;
+    const darkColor = darken(cat.couleur, 0.35);
+    const lightColor = darken(cat.couleur, -0.15);
+    const bannerUrl = rubriqueBannerUrl(cat.slug, '..');
+
+    const articlesHtml = item.derniers_articles.length === 0
+        ? `<div class="empty-state" style="grid-column:1/-1;">Aucun article dans cette rubrique pour le moment.</div>`
+        : item.derniers_articles.map(a => `
+            <div class="mini-article-card">
+                <img class="thumb" src="${a.image ? escapeHtml(a.image) : placeholderThumb(cat.couleur, rubriqueIcon(cat.slug), 300, 160)}" alt="${escapeHtml(a.titre)}" loading="lazy">
+                <div class="content">
+                    <span class="tag-pill" style="background:${cat.couleur}">${escapeHtml(a.tag || cat.nom)}</span>
+                    <h5>${escapeHtml(excerpt(a.titre, 55))}</h5>
+                    <span class="date">${a.statut === 'publie' ? formatDateFr(a.published_at) : 'Brouillon'}</span>
+                </div>
+            </div>`).join('');
+
+    const heroStyle = bannerUrl
+        ? `background-image:url('${bannerUrl}'); background-size:cover; background-position:center;`
+        : `background:linear-gradient(120deg, ${lightColor} 0%, ${cat.couleur} 45%, ${darkColor} 100%);`;
+
+    return `
+    <div class="rubrique-hero-card" style="${heroStyle}">
+        ${bannerUrl ? `<div class="rubrique-hero-photo-overlay" style="background:linear-gradient(100deg, ${darkColor}F0 0%, ${cat.couleur}CC 40%, rgba(0,0,0,0.35) 100%);"></div>` : ''}
+        ${bannerUrl ? '' : `<div class="rubrique-hero-watermark">${rubriqueIcon(cat.slug)}</div><div class="rubrique-hero-pattern"></div>`}
+        <div class="rubrique-hero-content">
+            <div class="rubrique-hero-icon" style="background:rgba(255,255,255,0.18);">${rubriqueIcon(cat.slug)}</div>
+            <h2>${escapeHtml(cat.nom)}</h2>
+            <p class="desc">${escapeHtml(cat.description || '')}</p>
+            <div class="rubrique-stats-row">
+                <div class="rubrique-stat-pill"><div class="num">${s.articles_publies}</div><div class="lbl">Articles publiés</div></div>
+                <div class="rubrique-stat-pill"><div class="num">${s.contributeurs}</div><div class="lbl">Contributeur(s)</div></div>
+                <div class="rubrique-stat-pill"><div class="num">${s.tags_utilises}</div><div class="lbl">Étiquettes utilisées</div></div>
+            </div>
+            <div class="rubrique-hero-actions">
+                <a href="articles.html?cat=${cat.id}" class="btn-hero" style="background:#fff; color:${darkColor};">Gérer les articles →</a>
+                <a href="article_form.html?categorie=${cat.id}" class="btn-hero" style="background:rgba(255,255,255,0.18); backdrop-filter:blur(6px);">+ Nouvel article</a>
+            </div>
+        </div>
+    </div>
+    <div class="rubrique-derniers">
+        <div class="rubrique-derniers-head">
+            <h4>Derniers articles — ${escapeHtml(cat.nom)}</h4>
+            <a href="articles.html?cat=${cat.id}" style="color:${cat.couleur};">Voir tout →</a>
+        </div>
+        <div class="mini-card-grid">${articlesHtml}</div>
+    </div>`;
+}
+
+(async () => {
+    const admin = await guardAdminPage();
+    if (!admin) return;
+    renderAdminLayout(admin, 'rubriques', 'Rubriques');
+
+    document.getElementById('adminBody').innerHTML = `
+        <div class="toolbar" style="justify-content:space-between;">
+            <p style="color:var(--text-muted); font-size:0.9rem;">Vue d'ensemble des 5 rubriques du site, avec statistiques en temps réel.</p>
+            <a href="categories.html" class="btn btn-ghost btn-sm">⚙️ Gérer les rubriques (nom, couleur…)</a>
+        </div>
+        <div id="rubriquesContainer"><p style="color:var(--text-muted);">Chargement…</p></div>`;
+
+    const data = await KmerAPI.get('admin/rubriques.php');
+    const container = document.getElementById('rubriquesContainer');
+    if (!data.success) { container.innerHTML = `<div class="alert alert-error">${escapeHtml(data.message)}</div>`; return; }
+
+    container.innerHTML = data.rubriques.map(renderRubriqueCard).join('');
+})();
+</script>
+</body>
+</html>

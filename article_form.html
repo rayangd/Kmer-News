@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — Kmer News Admin</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/admin.css">
+<link rel="icon" href="data:,">
+</head>
+<body>
+<div id="admin-root"></div>
+
+<script>window.KMER_API_BASE = '../api';</script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/main.js"></script>
+<script src="../assets/js/admin-layout.js"></script>
+<script>
+(async () => {
+    const admin = await guardAdminPage();
+    if (!admin) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get('id');
+    const isEdit = !!articleId;
+
+    renderAdminLayout(admin, 'articles', isEdit ? 'Modifier un article' : 'Nouvel article');
+
+    const catData = await KmerAPI.get('categories.php');
+    const categories = catData.categories || [];
+
+    let article = null;
+    if (isEdit) {
+        const r = await KmerAPI.get(`admin/articles.php?id=${articleId}`);
+        if (!r.success) { adminFlash('error', 'Article introuvable.'); return; }
+        article = r.article;
+    }
+
+    document.getElementById('adminBody').innerHTML = `
+    <form id="articleForm" class="admin-form" enctype="multipart/form-data">
+        <div class="form-grid-2">
+            <div class="panel"><div class="panel-body">
+                <div class="field"><label>Titre de l'article *</label><input type="text" name="titre" id="f_titre" required></div>
+                <div class="field"><label>Sous-titre</label><input type="text" name="sous_titre" id="f_sous_titre"></div>
+                <div class="field"><label>Chapô (résumé court affiché sur les cartes)</label><textarea name="chapo" id="f_chapo" rows="3"></textarea></div>
+                <div class="field"><label>Contenu de l'article *</label><textarea name="contenu" id="f_contenu" rows="14" required></textarea></div>
+            </div></div>
+            <div>
+                <div class="panel"><div class="panel-body">
+                    <div class="field">
+                        <label>Rubrique *</label>
+                        <select name="categorie_id" id="f_categorie_id" required>
+                            <option value="">— Choisir —</option>
+                            ${categories.map(c => `<option value="${c.id}">${escapeHtml(c.nom)}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="field"><label>Étiquette (ex: Football, Startup...)</label><input type="text" name="tag" id="f_tag"></div>
+                    <div class="field">
+                        <label>Statut</label>
+                        <select name="statut" id="f_statut">
+                            <option value="brouillon">Brouillon</option>
+                            <option value="publie">Publié</option>
+                        </select>
+                    </div>
+                    <div class="field-check">
+                        <input type="checkbox" name="a_la_une" id="f_une">
+                        <label for="f_une" style="margin:0; text-transform:none; font-weight:600;">Mettre à la une</label>
+                    </div>
+                    <div class="field">
+                        <label>Image de couverture</label>
+                        <input type="file" name="image" id="imageInput" accept="image/png,image/jpeg,image/webp">
+                        <img id="imagePreview" style="margin-top:10px; border-radius:10px; display:none; max-width:100%;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" id="submitBtn">${isEdit ? 'Mettre à jour' : "Publier l'article"}</button>
+                    <a href="articles.html" class="btn btn-ghost btn-block" style="margin-top:10px;">Annuler</a>
+                </div></div>
+            </div>
+        </div>
+    </form>`;
+
+    setupImagePreview('imageInput', 'imagePreview');
+
+    if (article) {
+        document.getElementById('f_titre').value = article.titre || '';
+        document.getElementById('f_sous_titre').value = article.sous_titre || '';
+        document.getElementById('f_chapo').value = article.chapo || '';
+        document.getElementById('f_contenu').value = article.contenu || '';
+        document.getElementById('f_categorie_id').value = article.categorie_id || '';
+        document.getElementById('f_tag').value = article.tag || '';
+        document.getElementById('f_statut').value = article.statut || 'brouillon';
+        document.getElementById('f_une').checked = article.a_la_une == 1;
+        if (article.image) {
+            const preview = document.getElementById('imagePreview');
+            preview.src = article.image;
+            preview.style.display = 'block';
+        }
+    } else {
+        const preselectCat = params.get('categorie');
+        if (preselectCat) document.getElementById('f_categorie_id').value = preselectCat;
+    }
+
+    document.getElementById('articleForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+
+        const fd = new FormData(e.target);
+        if (isEdit) fd.append('id', articleId);
+        if (!fd.get('a_la_une')) fd.delete('a_la_une'); else fd.set('a_la_une', '1');
+
+        const r = await KmerAPI.postForm('admin/articles.php', fd);
+        btn.disabled = false;
+
+        if (r.data.success) {
+            window.location.href = 'articles.html';
+        } else {
+            adminFlash('error', r.data.message);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
+})();
+</script>
+</body>
+</html>
