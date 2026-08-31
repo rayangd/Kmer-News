@@ -1,9 +1,5 @@
 <?php
-/**
- * KMER NEWS - Fonctions utilitaires
- */
 
-/** Échapper une sortie HTML (anti-XSS) */
 function e(?string $value): string
 {
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
@@ -41,7 +37,7 @@ function uniqueArticleSlug(PDO $pdo, string $base, ?int $excludeId = null): stri
     }
 }
 
-/** Formater une date en français */
+ 
 function formatDateFr(?string $datetime): string
 {
     if (!$datetime) return '';
@@ -62,7 +58,6 @@ function timeAgo(?string $datetime): string
     return formatDateFr($datetime);
 }
 
-/** Extrait sécurisé de texte */
 function excerpt(string $text, int $length = 150): string
 {
     $text = trim(strip_tags($text));
@@ -70,14 +65,14 @@ function excerpt(string $text, int $length = 150): string
     return mb_substr($text, 0, $length) . '…';
 }
 
-/** Redirection avec arrêt immédiat */
+
 function redirect(string $path): never
 {
     header('Location: ' . $path);
     exit;
 }
 
-/** Génère (ou récupère) le jeton CSRF de la session */
+
 function csrfToken(): string
 {
     if (empty($_SESSION['csrf_token'])) {
@@ -86,7 +81,7 @@ function csrfToken(): string
     return $_SESSION['csrf_token'];
 }
 
-/** Vérifie le jeton CSRF envoyé en POST */
+
 function checkCsrf(): void
 {
     $token = $_POST['csrf_token'] ?? '';
@@ -96,19 +91,18 @@ function checkCsrf(): void
     }
 }
 
-/** Champ input caché CSRF prêt à l'emploi dans un <form> */
+
 function csrfField(): string
 {
     return '<input type="hidden" name="csrf_token" value="' . e(csrfToken()) . '">';
 }
 
-/** Valide un mot de passe (8 caractères minimum) */
+
 function isPasswordValid(string $password): bool
 {
     return strlen($password) >= 8;
 }
 
-/** Message flash (succès/erreur) affiché une seule fois */
 function setFlash(string $type, string $message): void
 {
     $_SESSION['flash'] = ['type' => $type, 'message' => $message];

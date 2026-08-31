@@ -1,7 +1,5 @@
 <?php
-/**
- * KMER NEWS - Accès aux données (requêtes préparées)
- */
+
 
 function getCategories(PDO $pdo): array
 {

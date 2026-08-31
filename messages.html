@@ -6,7 +6,7 @@
 <title>Messages — Kmer News Admin</title>
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="../assets/css/admin.css">
-<link rel="icon" href="data:,">
+<link rel="icon" href="../assets/img/logo.jpg" type="image/jpeg">
 </head>
 <body>
 <div id="admin-root"></div>
@@ -33,7 +33,7 @@ async function loadMessages() {
                     <strong>${escapeHtml(m.nom)}</strong> — <span style="color:var(--text-muted);">${escapeHtml(m.email)}</span>
                     ${m.lu == 0 ? '<span class="badge badge-blue" style="margin-left:8px;">Nouveau</span>' : ''}
                     <p style="margin-top:6px; font-weight:700;">${escapeHtml(m.sujet || '(sans sujet)')}</p>
-                    <p style="margin-top:4px; color:#333;">${escapeHtml(m.contenu)}</p>
+                    <p style="margin-top:4px; color:var(--navy);">${escapeHtml(m.contenu)}</p>
                     <p style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${timeAgo(m.created_at)}</p>
                 </div>
                 <div class="action-icons">

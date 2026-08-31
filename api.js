@@ -1,14 +1,10 @@
-/* ============================================================
-   KMER NEWS — api.js
-   Petite couche d'appel à l'API PHP (fetch + gestion CSRF/session)
-   ============================================================ */
+
 
 const API_BASE = (window.KMER_API_BASE || '/kmernews/api');
 
 const KmerAPI = {
     _csrfToken: null,
 
-    /** Récupère la session courante (utilisateur connecté + jeton CSRF) */
     async session() {
         const res = await fetch(`${API_BASE}/session.php`, { credentials: 'include' });
         const data = await res.json();
@@ -16,13 +12,11 @@ const KmerAPI = {
         return data;
     },
 
-    /** Appel GET générique, retourne le JSON */
     async get(path) {
         const res = await fetch(`${API_BASE}/${path}`, { credentials: 'include' });
         return res.json();
     },
 
-    /** Appel POST en JSON (login, register, contact, like, comment...) */
     async postJson(path, payload = {}) {
         const headers = { 'Content-Type': 'application/json' };
         if (this._csrfToken) headers['X-CSRF-Token'] = this._csrfToken;
@@ -35,7 +29,6 @@ const KmerAPI = {
         return { ok: res.ok, status: res.status, data: await res.json() };
     },
 
-    /** Appel POST en FormData (upload d'image, articles admin) */
     async postForm(path, formData) {
         if (this._csrfToken) formData.append('csrf_token', this._csrfToken);
         const res = await fetch(`${API_BASE}/${path}`, {
@@ -46,7 +39,6 @@ const KmerAPI = {
         return { ok: res.ok, status: res.status, data: await res.json() };
     },
 
-    /** Appel DELETE en JSON */
     async del(path, payload = {}) {
         const headers = { 'Content-Type': 'application/json' };
         if (this._csrfToken) headers['X-CSRF-Token'] = this._csrfToken;
@@ -59,16 +51,12 @@ const KmerAPI = {
         return { ok: res.ok, status: res.status, data: await res.json() };
     },
 };
-
-/** Échappement HTML simple pour éviter les injections lors de l'insertion dynamique */
 function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str)
         .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 }
-
-/** Formate une date ISO en français lisible */
 function formatDateFr(iso) {
     if (!iso) return '';
     const mois = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
@@ -92,16 +80,11 @@ function excerpt(text, length = 90) {
     const clean = text.replace(/<[^>]*>/g, '').trim();
     return clean.length <= length ? clean : clean.slice(0, length) + '…';
 }
-
-/** Icône par rubrique (utilisée dans l'admin et le site public) */
 const RUBRIQUE_ICONS = { culture: '🏛️', musique: '🎵', sport: '⚽', 'high-tech': '💻', societe: '🤝' };
 function rubriqueIcon(slug) { return RUBRIQUE_ICONS[slug] || '📰'; }
 
-/**
- * Vignette générée localement (dégradé aux couleurs de la rubrique + icône).
- * Aucune dépendance réseau externe : fonctionne même sans connexion internet,
- * essentiel pour une présentation fiable.
- */
+
+
 function placeholderThumb(color = '#0048D9', icon = '📰', w = 400, h = 200) {
     const dark = shadeColor(color, -35);
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
@@ -132,16 +115,21 @@ function shadeColor(hex, percent) {
 
 const RUBRIQUE_COLORS = { culture: '#7C3AED', musique: '#DB1E5B', sport: '#0EA88A', 'high-tech': '#F5A623', societe: '#DC2626' };
 
-/** Bannières photo réelles fournies pour chaque rubrique (societe utilise un dégradé généré, pas de photo dédiée) */
+
 const RUBRIQUE_BANNERS = { culture: 'culture.jpg', musique: 'musique.jpg', sport: 'sport.jpg', 'high-tech': 'hightech.jpg' };
 function rubriqueBannerUrl(slug, basePath = '.') {
     const file = RUBRIQUE_BANNERS[slug];
     return file ? `${basePath}/assets/img/rubriques/${file}` : null;
 }
 
-/** Image de secours (locale, sans réseau) quand l'article n'a pas de photo */
-function articleImage(article, w = 400, h = 200) {
-    if (article && article.image) return article.image;
+
+function articleImage(article, w = 400, h = 200, basePath = '.') {
+    if (article && article.image) {
+        if (/^(https?:)?\/\//.test(article.image) || article.image.startsWith('data:')) {
+            return article.image;
+        }
+        return `${basePath}/${article.image}`;
+    }
     const color = (article && (article.categorie_couleur || article.cat_couleur)) || RUBRIQUE_COLORS[article && article.categorie_slug] || '#0048D9';
     const icon = rubriqueIcon((article && article.categorie_slug) || '');
     return placeholderThumb(color, icon, w, h);

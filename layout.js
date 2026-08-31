@@ -1,8 +1,3 @@
-/* ============================================================
-   KMER NEWS — layout.js
-   Construit le header et le footer dynamiquement (nav + état de connexion)
-   basePath : '.' si la page est à la racine, '..' si dans /espace ou /admin
-   ============================================================ */
 
 function renderHeader(basePath = '.') {
     const el = document.getElementById('site-header');
@@ -11,7 +6,7 @@ function renderHeader(basePath = '.') {
     <header class="site-header">
         <div class="header-inner">
             <a href="${basePath}/index.html" class="logo">
-                <span class="logo-badge">K</span>
+                <img src="${basePath}/assets/img/logo.jpg" alt="Kmer News" class="site-logo-img">
                 <span class="logo-text">
                     <strong>KMER<span>NEWS</span></strong>
                     <small>L'info en temps réel</small>
@@ -138,7 +133,7 @@ function renderFooter(basePath = '.') {
         <div class="container footer-grid">
             <div class="footer-col">
                 <div class="logo" style="color:#fff; margin-bottom:12px;">
-                    <span class="logo-badge">K</span>
+                    <img src="${basePath}/assets/img/logo.jpg" alt="Kmer News" class="site-logo-img">
                     <span class="logo-text"><strong>KMER<span>NEWS</span></strong><small>L'info en temps réel</small></span>
                 </div>
                 <p class="footer-desc">Le journal numérique interactif qui raconte le Cameroun d'aujourd'hui : culture, musique, sport et high-tech.</p>

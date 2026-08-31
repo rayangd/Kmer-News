@@ -1,11 +1,9 @@
 <?php
-/**
- * KMER NEWS - Authentification & gestion des sessions
- */
+
 
 require_once __DIR__ . '/functions.php';
 
-/** L'utilisateur est-il connecté ? */
+
 function isLoggedIn(): bool
 {
     return !empty($_SESSION['user_id']);
@@ -17,7 +15,6 @@ function isAdmin(): bool
     return isLoggedIn() && ($_SESSION['user_role'] ?? '') === 'admin';
 }
 
-/** Récupère les infos de l'utilisateur connecté (ou null) */
 function currentUser(): ?array
 {
     if (!isLoggedIn()) return null;
@@ -37,7 +34,7 @@ function currentUser(): ?array
     return $cache;
 }
 
-/** Force la connexion : sinon redirige vers la page de connexion */
+
 function requireLogin(): void
 {
     if (!isLoggedIn()) {
@@ -46,7 +43,7 @@ function requireLogin(): void
     }
 }
 
-/** Force le rôle admin : sinon redirige */
+
 function requireAdmin(): void
 {
     requireLogin();
@@ -56,10 +53,7 @@ function requireAdmin(): void
     }
 }
 
-/**
- * Anti brute-force : vérifie le nombre de tentatives récentes
- * pour un identifiant + une IP donnés.
- */
+
 function tooManyLoginAttempts(PDO $pdo, string $identifiant, string $ip): bool
 {
     $stmt = $pdo->prepare(
@@ -86,10 +80,7 @@ function clearLoginAttempts(PDO $pdo, string $identifiant, string $ip): void
     $stmt->execute(['identifiant' => $identifiant, 'ip' => $ip]);
 }
 
-/**
- * Authentifie un utilisateur et ouvre la session.
- * Retourne 'admin', 'user', ou false si échec.
- */
+
 function attemptLogin(string $email, string $password): string|false
 {
     $pdo = Database::getConnection();
@@ -110,7 +101,7 @@ function attemptLogin(string $email, string $password): string|false
 
     clearLoginAttempts($pdo, $email, $ip);
 
-    // Régénère l'ID de session pour éviter la fixation de session
+ 
     session_regenerate_id(true);
 
     $_SESSION['user_id']   = $user['id'];

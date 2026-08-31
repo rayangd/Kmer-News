@@ -39,7 +39,7 @@ if (!empty($_FILES['image']['name'])) {
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
         $filename = bin2hex(random_bytes(8)) . '.' . $allowed[$mime];
         if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
-            $imagePath = '../assets/img/uploads/' . $filename;
+            $imagePath = 'assets/img/uploads/' . $filename;
         } else {
             $errors[] = "Impossible d'enregistrer l'image.";
         }

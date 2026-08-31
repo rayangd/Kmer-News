@@ -6,7 +6,7 @@
 <title>Article — Kmer News Admin</title>
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="../assets/css/admin.css">
-<link rel="icon" href="data:,">
+<link rel="icon" href="../assets/img/logo.jpg" type="image/jpeg">
 </head>
 <body>
 <div id="admin-root"></div>
@@ -91,7 +91,7 @@
         document.getElementById('f_une').checked = article.a_la_une == 1;
         if (article.image) {
             const preview = document.getElementById('imagePreview');
-            preview.src = article.image;
+            preview.src = /^(https?:)?\/\//.test(article.image) || article.image.startsWith('data:') ? article.image : '../' + article.image;
             preview.style.display = 'block';
         }
     } else {

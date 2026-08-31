@@ -1,12 +1,4 @@
-/* ============================================================
-   KMER NEWS — admin-layout.js
-   Construit la sidebar admin + vérifie que l'utilisateur est bien admin
-   ============================================================ */
 
-/**
- * Vérifie la session et bloque l'accès si l'utilisateur n'est pas admin.
- * Retourne l'utilisateur admin si tout est ok (à appeler en tête de chaque page admin).
- */
 async function guardAdminPage() {
     const session = await KmerAPI.session();
     if (!session.logged_in) {
@@ -14,7 +6,6 @@ async function guardAdminPage() {
         return null;
     }
     if (session.user.role !== 'admin') {
-        // Un simple utilisateur qui tente d'accéder à l'admin est renvoyé vers l'accueil
         window.location.href = '../index.html';
         return null;
     }
@@ -27,7 +18,7 @@ function renderAdminLayout(admin, activeMenu, pageTitle) {
     <div class="admin-layout">
         <aside class="admin-sidebar">
             <div class="brand">
-                <span class="logo-badge">K</span>
+                <img src="../assets/img/logo.jpg" alt="Kmer News" class="site-logo-img">
                 <strong>KMER NEWS<br><small style="font-weight:400;opacity:.7;">Administration</small></strong>
             </div>
             <nav>

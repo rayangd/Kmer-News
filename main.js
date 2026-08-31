@@ -1,7 +1,4 @@
-/* ============================================================
-   KMER NEWS — main.js
-   Petits utilitaires partagés (confirmation, aperçu d'image)
-   ============================================================ */
+
 document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', (e) => {
         const el = e.target.closest('.confirm-delete');

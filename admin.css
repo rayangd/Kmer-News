@@ -21,12 +21,12 @@
     padding: 12px 20px;
     font-size: 0.92rem;
     font-weight: 600;
-    color: #B9C4E8;
+    color: rgba(255,255,255,0.65);
     border-left: 3px solid transparent;
 }
 .admin-sidebar nav a:hover { background: rgba(255,255,255,0.05); color: #fff; }
 .admin-sidebar nav a.active { background: rgba(30,115,255,0.15); color: #fff; border-left-color: var(--blue-light); }
-.admin-sidebar .section-label { padding: 18px 20px 6px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: #6C79A8; font-weight: 700; }
+.admin-sidebar .section-label { padding: 18px 20px 6px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); font-weight: 700; }
 .admin-sidebar .sidebar-foot { padding: 20px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
 
 .admin-main { flex: 1; min-width: 0; background: var(--bg-page); }
@@ -46,10 +46,10 @@
 .stat-card .icon { font-size: 1.5rem; margin-bottom: 10px; }
 .stat-card .num { font-family: var(--font-title); font-size: 1.9rem; font-weight: 800; }
 .stat-card .label { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; }
-.stat-card.c-culture { border-top-color: var(--culture); }
-.stat-card.c-musique { border-top-color: var(--musique); }
-.stat-card.c-sport { border-top-color: var(--sport); }
-.stat-card.c-hightech { border-top-color: var(--hightech); }
+.stat-card.c-culture { border-top-color: var(--blue); }
+.stat-card.c-musique { border-top-color: var(--blue); }
+.stat-card.c-sport { border-top-color: var(--blue); }
+.stat-card.c-hightech { border-top-color: var(--blue); }
 
 .panel { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 26px; }
 .panel-head { padding: 18px 22px; border-bottom: 1px solid var(--gray); display: flex; justify-content: space-between; align-items: center; }
@@ -58,15 +58,15 @@
 
 table.admin-table { width: 100%; border-collapse: collapse; }
 .admin-table th { text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); padding: 10px 16px; border-bottom: 2px solid var(--gray); }
-.admin-table td { padding: 13px 16px; border-bottom: 1px solid #EEF1F6; font-size: 0.9rem; vertical-align: middle; }
-.admin-table tr:hover td { background: #FAFBFF; }
+.admin-table td { padding: 13px 16px; border-bottom: 1px solid var(--gray); font-size: 0.9rem; vertical-align: middle; }
+.admin-table tr:hover td { background: var(--white); }
 
 .badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; }
-.badge-green { background: #D1FAE5; color: #047857; }
-.badge-yellow { background: #FEF3C7; color: #B45309; }
-.badge-red { background: #FEE2E2; color: #B91C1C; }
+.badge-green { background: rgba(0,72,217,0.10); color: var(--blue); }
+.badge-yellow { background: var(--gray); color: var(--navy); }
+.badge-red { background: rgba(0,27,90,0.08); color: var(--navy); }
 .badge-gray { background: var(--gray); color: var(--navy); }
-.badge-blue { background: #DBEAFE; color: #1D4ED8; }
+.badge-blue { background: rgba(0,72,217,0.12); color: var(--blue); }
 
 .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; }
 
@@ -190,4 +190,12 @@ table.admin-table { width: 100%; border-collapse: collapse; }
 @media (max-width: 640px) {
     .mini-card-grid { grid-template-columns: 1fr; }
     .rubrique-hero-content h2 { font-size: 1.5rem; }
+}
+
+/* Logo Kmer News (image) dans la sidebar admin */
+.site-logo-img {
+    height: 34px;
+    width: auto;
+    display: block;
+    border-radius: 6px;
 }

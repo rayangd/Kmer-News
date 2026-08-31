@@ -6,7 +6,7 @@
 <title>Rubriques — Kmer News Admin</title>
 <link rel="stylesheet" href="../assets/css/style.css">
 <link rel="stylesheet" href="../assets/css/admin.css">
-<link rel="icon" href="data:,">
+<link rel="icon" href="../assets/img/logo.jpg" type="image/jpeg">
 </head>
 <body>
 <div id="admin-root"></div>
@@ -35,7 +35,7 @@ function renderRubriqueCard(item) {
         ? `<div class="empty-state" style="grid-column:1/-1;">Aucun article dans cette rubrique pour le moment.</div>`
         : item.derniers_articles.map(a => `
             <div class="mini-article-card">
-                <img class="thumb" src="${a.image ? escapeHtml(a.image) : placeholderThumb(cat.couleur, rubriqueIcon(cat.slug), 300, 160)}" alt="${escapeHtml(a.titre)}" loading="lazy">
+                <img class="thumb" src="${articleImage(a, 300, 160, '..')}" alt="${escapeHtml(a.titre)}" loading="lazy">
                 <div class="content">
                     <span class="tag-pill" style="background:${cat.couleur}">${escapeHtml(a.tag || cat.nom)}</span>
                     <h5>${escapeHtml(excerpt(a.titre, 55))}</h5>
@@ -44,12 +44,12 @@ function renderRubriqueCard(item) {
             </div>`).join('');
 
     const heroStyle = bannerUrl
-        ? `background-image:url('${bannerUrl}'); background-size:cover; background-position:center;`
+        ? `background-image:url('${bannerUrl}'); background-size:cover; background-position:center 20%;`
         : `background:linear-gradient(120deg, ${lightColor} 0%, ${cat.couleur} 45%, ${darkColor} 100%);`;
 
     return `
     <div class="rubrique-hero-card" style="${heroStyle}">
-        ${bannerUrl ? `<div class="rubrique-hero-photo-overlay" style="background:linear-gradient(100deg, ${darkColor}F0 0%, ${cat.couleur}CC 40%, rgba(0,0,0,0.35) 100%);"></div>` : ''}
+        ${bannerUrl ? `<div class="rubrique-hero-photo-overlay" style="background:linear-gradient(90deg, rgba(0,27,90,0.75) 0%, rgba(0,27,90,0.35) 45%, rgba(0,27,90,0.15) 100%);"></div>` : ''}
         ${bannerUrl ? '' : `<div class="rubrique-hero-watermark">${rubriqueIcon(cat.slug)}</div><div class="rubrique-hero-pattern"></div>`}
         <div class="rubrique-hero-content">
             <div class="rubrique-hero-icon" style="background:rgba(255,255,255,0.18);">${rubriqueIcon(cat.slug)}</div>

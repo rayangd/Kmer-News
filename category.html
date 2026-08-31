@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rubrique — Kmer News</title>
 <link rel="stylesheet" href="assets/css/style.css">
-<link rel="icon" href="data:,">
+<link rel="icon" href="assets/img/logo.jpg" type="image/jpeg">
 </head>
 <body>
 <div id="site-header"></div>
@@ -45,7 +45,7 @@ async function loadCategory(page = 1) {
     let html = '';
     if (bannerUrl) {
         html += `<div class="category-banner" style="background-image:url('${bannerUrl}');">
-            <div class="category-banner-overlay" style="background:linear-gradient(100deg, ${cat.couleur}E6 0%, ${cat.couleur}99 35%, rgba(0,0,0,0.55) 100%);">
+            <div class="category-banner-overlay" style="background:linear-gradient(90deg, rgba(0,27,90,0.75) 0%, rgba(0,27,90,0.35) 45%, rgba(0,27,90,0.15) 100%);">
                 <div class="container">
                     <span class="category-banner-icon">${rubriqueIcon(cat.slug)}</span>
                     <h1>${escapeHtml(cat.nom)}</h1>

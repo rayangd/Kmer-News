@@ -1,7 +1,5 @@
 <?php
-/**
- * KMER NEWS - Connexion base de données (PDO)
- */
+
 
 class Database
 {

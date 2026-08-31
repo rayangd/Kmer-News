@@ -1,6 +1,4 @@
-/* ============================================================
-   KMER NEWS — home.js
-   ============================================================ */
+
 
 function renderHeroAndAuth(session) {
     const heroActions = document.getElementById('heroActions');
@@ -117,7 +115,7 @@ async function loadHomePage() {
             const bannerUrl = rubriqueBannerUrl(cat.slug, '.');
             if (bannerUrl) {
                 html += `<div class="rubrique-banner-strip" style="background-image:url('${bannerUrl}');">
-                    <div class="strip-overlay" style="background:linear-gradient(90deg, ${cat.couleur}F2 0%, ${cat.couleur}CC 30%, rgba(20,16,58,0.65) 100%);"></div>
+                    <div class="strip-overlay" style="background:linear-gradient(90deg, rgba(0,27,90,0.78) 0%, rgba(0,27,90,0.40) 35%, rgba(0,27,90,0.15) 100%);"></div>
                     <div class="strip-content">
                         <span class="strip-icon">${rubriqueIcon(cat.slug)}</span>
                         <div><h2 style="color:#fff;">${escapeHtml(cat.nom)}</h2><p>${escapeHtml(cat.description || '')}</p></div>
